@@ -239,13 +239,16 @@ var gameOptions = {
   blueFlowerScore: 10,
   stingScore: -80,
   levelScore: 100,
+  shootWaspScore: 30,
+  shootButterflyScore: 10,
+  shootBlockScore: -50,
   xblocks: 14,
   yblocks: 14,
   butterflySpeed: [100, 115, 130],
   waspSpeed: [100, 120, 140],
-  bulletSpeed: 200,
+  bulletSpeed: 500,
   enemyInterval: [7000, 5500, 3500],
-  moveBlockInterval: [6000, 4500, 3000],
+  moveBlockInterval: [5000, 3500, 2000],
   butterflyRateOfEnemies: [0.7, 0.6, 0.5],
   overlapDistance: 30,
   maps: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, 0, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, 0, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, -1, -1, 0, 0, -1, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, 0, -1, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, 0, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, -1, -1, 0, 0, 0, 0, 0, -1, 0, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, 0, -1, -1, -1, -1, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, 0, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, -1, -1, -1, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, -1, -1, 0, -1, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, -1, -1, 0, -1, -1, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
@@ -344,7 +347,6 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
         }
         x++;
       });
-      console.log(numBlocks);
       for (var i = 0; i < gameOptions.numBlueFlowers; i++) {
         x = Phaser.Math.Between(1, gameOptions.xblocks - 2) * gameOptions.blocksize + gameOptions.blocksize / 2;
         y = Phaser.Math.Between(1, gameOptions.yblocks - 2) * gameOptions.blocksize + gameOptions.blocksize / 2;
@@ -353,7 +355,6 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
           if (x == blocks[j].x && y == blocks[j].y) {
             allowed = false;
             i--;
-            console.log("ei käy");
             break;
           }
         }
@@ -361,7 +362,6 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
           if (x == flowers[_j].x && y == flowers[_j].y) {
             allowed = false;
             i--;
-            console.log("ei käy");
             break;
           }
         }
@@ -382,7 +382,6 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
           if (x == flowers[_j2].x && y == flowers[_j2].y) {
             _allowed = false;
             _i--;
-            console.log("ei käy");
             break;
           }
         }
@@ -390,7 +389,6 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
           if (x == blocks[_j3].x && y == blocks[_j3].y) {
             _allowed = false;
             _i--;
-            console.log("ei käy");
             break;
           }
         }
@@ -480,7 +478,9 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
         var img = this.add.image(game.config.width - _i2 * gameOptions.blocksize / 2, gameOptions.blocksize / 4, "man");
         img.setScale(0.5);
       }
-      this.bullet = this.physics.add.sprite(100, 430, 'bullet');
+
+      //    this.bullet = this.physics.add.sprite(100, 430, 'bullet');
+
       this.cursors = this.input.keyboard.createCursorKeys();
       this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
@@ -696,9 +696,22 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
       }
     }
   }, {
+    key: "shoot",
+    value: function shoot(bullet, target) {
+      target.disableBody(true, true);
+      bullet.disableBody(true, true);
+      if (target.texture.key == "block") this.score += gameOptions.shootBlockScore;else if (target.texture.key == "wasp") this.score += gameOptions.shootWaspScore;else if (target.texture.key == "butterfly") this.score += gameOptions.shootButterflyScore;
+      this.scoreText.setText(this.score);
+      console.log(this.score);
+    }
+  }, {
     key: "update",
     value: function update() {
       if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+        this.bullet = this.physics.add.sprite(this.man.body.center.x, this.man.body.center.y, 'bullet');
+        this.physics.add.overlap(this.bullet, this.blockGroup, this.shoot, null, this);
+        this.physics.add.overlap(this.bullet, this.butterflyGroup, this.shoot, null, this);
+        this.physics.add.overlap(this.bullet, this.waspGroup, this.shoot, null, this);
         this.bullet.setVelocityX(gameOptions.bulletSpeed);
       }
       if (this.cursors.left.isDown) {
