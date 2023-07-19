@@ -25,6 +25,7 @@ const gameOptions = {
   yblocks: 14,
   butterflySpeed: [100, 115, 130],
   waspSpeed: [100, 120, 140],
+  bulletSpeed: 200,
   enemyInterval: [7000, 5500, 3500],
   moveBlockInterval: [6000, 4500, 3000],
   butterflyRateOfEnemies: [0.7, 0.6, 0.5],
@@ -122,7 +123,6 @@ class PlayGame extends Phaser.Scene {
     this.load.spritesheet("wasp", require("../assets/wasp.png"), { frameWidth: 75, frameHeight: 75 });
     this.load.audio("sting", [require("../assets/bzzz.mp3")]);
     this.load.audio("suck", [require("../assets/suck.mp3")]);
-//    this.load.tilemapCSV("map", "../assets/map_1.csv");
     this.load.image("bullet", require("../assets/bullet.png"));
   }
 
@@ -278,7 +278,10 @@ class PlayGame extends Phaser.Scene {
       img.setScale(0.5);
     }
 
+    this.bullet = this.physics.add.sprite(100, 430, 'bullet');
+
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
   }
 
   isCloseEnough(body1, body2) {
@@ -491,6 +494,9 @@ class PlayGame extends Phaser.Scene {
 
 
   update() {
+    if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+      this.bullet.setVelocityX(gameOptions.bulletSpeed);
+    }
     if(this.cursors.left.isDown) {
       this.man.body.velocity.x = -gameOptions.manSpeed
     }

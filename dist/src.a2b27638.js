@@ -243,6 +243,7 @@ var gameOptions = {
   yblocks: 14,
   butterflySpeed: [100, 115, 130],
   waspSpeed: [100, 120, 140],
+  bulletSpeed: 200,
   enemyInterval: [7000, 5500, 3500],
   moveBlockInterval: [6000, 4500, 3000],
   butterflyRateOfEnemies: [0.7, 0.6, 0.5],
@@ -303,7 +304,6 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
       });
       this.load.audio("sting", [require("../assets/bzzz.mp3")]);
       this.load.audio("suck", [require("../assets/suck.mp3")]);
-      //    this.load.tilemapCSV("map", "../assets/map_1.csv");
       this.load.image("bullet", require("../assets/bullet.png"));
     }
   }, {
@@ -480,7 +480,9 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
         var img = this.add.image(game.config.width - _i2 * gameOptions.blocksize / 2, gameOptions.blocksize / 4, "man");
         img.setScale(0.5);
       }
+      this.bullet = this.physics.add.sprite(100, 430, 'bullet');
       this.cursors = this.input.keyboard.createCursorKeys();
+      this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
   }, {
     key: "isCloseEnough",
@@ -696,6 +698,9 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
   }, {
     key: "update",
     value: function update() {
+      if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+        this.bullet.setVelocityX(gameOptions.bulletSpeed);
+      }
       if (this.cursors.left.isDown) {
         this.man.body.velocity.x = -gameOptions.manSpeed;
       } else if (this.cursors.right.isDown) {
