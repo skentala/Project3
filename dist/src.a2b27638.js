@@ -465,7 +465,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
       this.physics.add.overlap(this.butterflyGroup, this.blueFlowerGroup, this.butterflySucksFlower, this.isCloseEnough, this);
       this.physics.add.overlap(this.butterflyGroup, this.redFlowerGroup, this.butterflySucksFlower, this.isCloseEnough, this);
       this.physics.add.overlap(this.man, this.waspGroup, this.waspStings, this.isCloseEnough, this);
-      this.gameText = this.add.text(0, 0, "Level ".concat(level), {
+      this.gameText = this.add.text(0, 0, "Level ".concat(level, "/").concat(gameOptions.maxlevel), {
         fontSize: "36px",
         fill: "#000000",
         fontStyle: "bold"
@@ -524,7 +524,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
         this.score += gameOptions.levelScore;
         this.scoreText.setText(this.score);
         if (level == gameOptions.maxlevel) {
-          this.gameText.setText("Level ".concat(level, " completed, game finished"));
+          this.gameText.setText("Level ".concat(level, "/").concat(gameOptions.maxlevel, " completed, game finished"));
           this.time.addEvent({
             delay: 4000,
             callback: function callback() {
@@ -539,7 +539,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
             loop: true
           });
         } else {
-          this.gameText.setText("Level ".concat(level, " completed"));
+          this.gameText.setText("Level ".concat(level, "/").concat(gameOptions.maxlevel, " completed"));
           this.time.addEvent({
             delay: 2000,
             callback: function callback() {
@@ -576,7 +576,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
           element.disableBody(true, true);
         });
         if (level == gameOptions.maxlevel) {
-          this.gameText.setText("Level ".concat(level, " completed, game finished"));
+          this.gameText.setText("Level ".concat(level, "/").concat(gameOptions.maxlevel, " completed, game finished"));
           this.time.addEvent({
             delay: 4000,
             callback: function callback() {
@@ -591,7 +591,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
             loop: true
           });
         } else {
-          this.gameText.setText("Level ".concat(level, " completed"));
+          this.gameText.setText("Level ".concat(level, "/").concat(gameOptions.maxlevel, " completed"));
           this.time.addEvent({
             delay: 2000,
             callback: function callback() {

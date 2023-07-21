@@ -269,8 +269,8 @@ class PlayGame extends Phaser.Scene {
     this.physics.add.overlap(this.butterflyGroup, this.blueFlowerGroup, this.butterflySucksFlower, this.isCloseEnough, this);
     this.physics.add.overlap(this.butterflyGroup, this.redFlowerGroup, this.butterflySucksFlower, this.isCloseEnough, this);
     this.physics.add.overlap(this.man, this.waspGroup, this.waspStings, this.isCloseEnough, this);
-    
-    this.gameText = this.add.text(0, 0, `Level ${level}`, {fontSize: "36px", fill: "#000000", fontStyle: "bold"})
+
+    this.gameText = this.add.text(0, 0, `Level ${level}/${gameOptions.maxlevel}`, {fontSize: "36px", fill: "#000000", fontStyle: "bold"})
     this.scoreText = this.add.text(game.config.width - 1.75*gameOptions.blocksize, gameOptions.blocksize/2, this.score, {fontSize: "36px", fill: "#000000", fontStyle: "bold"});
     for (let i = 1; i <= gameOptions.numMen; i++) {
       const img = this.add.image(game.config.width - i*gameOptions.blocksize/2, gameOptions.blocksize/4, "man");
@@ -308,7 +308,7 @@ class PlayGame extends Phaser.Scene {
       this.score += gameOptions.levelScore;
       this.scoreText.setText(this.score);
       if (level == gameOptions.maxlevel) { 
-        this.gameText.setText(`Level ${level} completed, game finished`);
+        this.gameText.setText(`Level ${level}/${gameOptions.maxlevel} completed, game finished`);
         this.time.addEvent({
           delay: 4000,
           callback: ()=>{
@@ -324,7 +324,7 @@ class PlayGame extends Phaser.Scene {
         });
       }
       else {
-        this.gameText.setText(`Level ${level} completed`);
+        this.gameText.setText(`Level ${level}/${gameOptions.maxlevel} completed`);
         this.time.addEvent({
           delay: 2000,
           callback: ()=>{
@@ -362,7 +362,7 @@ class PlayGame extends Phaser.Scene {
         element.disableBody(true, true);
       });
       if (level == gameOptions.maxlevel) { 
-        this.gameText.setText(`Level ${level} completed, game finished`);
+        this.gameText.setText(`Level ${level}/${gameOptions.maxlevel} completed, game finished`);
         this.time.addEvent({
           delay: 4000,
           callback: ()=>{
@@ -378,7 +378,7 @@ class PlayGame extends Phaser.Scene {
         });
       }
       else { 
-        this.gameText.setText(`Level ${level} completed`);
+        this.gameText.setText(`Level ${level}/${gameOptions.maxlevel} completed`);
         this.time.addEvent({
           delay: 2000,
           callback: ()=>{
