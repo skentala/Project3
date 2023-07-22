@@ -228,6 +228,7 @@ var numBlocks = 0;
 var level = 1;
 var x, y;
 var manDirection = "right";
+var isMouseClicked = false;
 var gameOptions = {
   maxlevel: 3,
   manGravity: 0,
@@ -247,7 +248,7 @@ var gameOptions = {
   yblocks: 14,
   butterflySpeed: [100, 115, 130],
   waspSpeed: [100, 120, 140],
-  bulletSpeed: 500,
+  bulletSpeed: 800,
   enemyInterval: [7000, 5500, 3500],
   moveBlockInterval: [5000, 3500, 2000],
   butterflyRateOfEnemies: [0.7, 0.6, 0.5],
@@ -484,18 +485,20 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
         fill: "#000000",
         fontStyle: "bold"
       });
-      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28, "Butterflies will suck the flowers from you.", {
+      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28, "Butterflies will suck the flowers away...", {
         fontSize: "28px",
         fill: "#000000",
         fontStyle: "bold"
       });
-      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28 * 2, "You can shoot the insects and gain more points.", {
+      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28 * 2, "You can shoot the insects with the mouse and gain more points.", {
         fontSize: "28px",
         fill: "#000000",
         fontStyle: "bold"
       });
       this.cursors = this.input.keyboard.createCursorKeys();
       this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+      console.log(this.input);
+      this.mouse = this.input.mouse;
     }
   }, {
     key: "isCloseEnough",
@@ -647,7 +650,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
       if (Phaser.Math.FloatBetween(0, 1) <= gameOptions.butterflyRateOfEnemies[level - 1]) {
         var bf = this.butterflyGroup.create(Phaser.Math.Between(0, game.config.width), game.config.height, "butterfly");
         bf.setVelocityY(-gameOptions.butterflySpeed[level - 1]);
-        if (Phaser.Math.Between(0, 1)) {
+        if (bf.body.x < gameOptions.blocksize * gameOptions.xblocks / 2) {
           bf.setVelocityX(gameOptions.butterflySpeed[level - 1] / 1.7);
           bf.anims.play("bfright", true);
         } else {
@@ -657,7 +660,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
       } else {
         var w = this.waspGroup.create(Phaser.Math.Between(0, game.config.width), game.config.height, "wasp");
         w.setVelocityY(-gameOptions.waspSpeed[level - 1]);
-        if (Phaser.Math.Between(0, 1)) {
+        if (w.body.x < gameOptions.blocksize * gameOptions.xblocks / 2) {
           w.setVelocityX(gameOptions.waspSpeed[level - 1] / 1.7);
           w.anims.play("waspright", true);
         } else {
@@ -716,28 +719,43 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
     value: function shoot(bullet, target) {
       target.disableBody(true, true);
       bullet.disableBody(true, true);
-      //    if(target.texture.key == "block") this.score += gameOptions.shootBlockScore;
       if (target.texture.key == "wasp") this.score += gameOptions.shootWaspScore;else if (target.texture.key == "butterfly") this.score += gameOptions.shootButterflyScore;
       this.scoreText.setText(this.score);
     }
   }, {
     key: "update",
     value: function update() {
-      if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+      if (!this.input.activePointer.isDown && isMouseClicked == true) {
         this.bullet = this.physics.add.sprite(this.man.body.center.x, this.man.body.center.y, 'bullet');
-        //      this.physics.add.overlap(this.bullet, this.blockGroup, this.shoot, null, this);
-        this.physics.add.overlap(this.bullet, this.butterflyGroup, this.shoot, null, this);
-        this.physics.add.overlap(this.bullet, this.waspGroup, this.shoot, null, this);
-        if (manDirection == "right") {
-          this.bullet.setVelocityX(gameOptions.bulletSpeed);
-        } else if (manDirection == "left") {
-          this.bullet.setVelocityX(-gameOptions.bulletSpeed);
-        } else if (manDirection == "up") {
-          this.bullet.setVelocityY(-gameOptions.bulletSpeed);
-        } else if (manDirection == "down") {
-          this.bullet.setVelocityY(gameOptions.bulletSpeed);
-        }
+        this.physics.add.overlap(this.bullet, this.butterflyGroup, this.shoot, this.isCloseEnough, this);
+        this.physics.add.overlap(this.bullet, this.waspGroup, this.shoot, this.isCloseEnough, this);
+        var mouseX = this.input.activePointer.x;
+        var mouseY = this.input.activePointer.y;
+        var distX = mouseX - this.man.body.center.x;
+        var distY = mouseY - this.man.body.center.y;
+        this.bullet.setVelocityX(gameOptions.bulletSpeed * distX / (Math.abs(distX) + Math.abs(distY)));
+        this.bullet.setVelocityY(gameOptions.bulletSpeed * distY / (Math.abs(distX) + Math.abs(distY)));
+        isMouseClicked = false;
+      } else if (this.input.activePointer.isDown && isMouseClicked == false) {
+        isMouseClicked = true;
       }
+      /*    if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+            this.bullet = this.physics.add.sprite(this.man.body.center.x, this.man.body.center.y, 'bullet');
+            this.physics.add.overlap(this.bullet, this.butterflyGroup, this.shoot, null, this);
+            this.physics.add.overlap(this.bullet, this.waspGroup, this.shoot, null, this);
+            if(manDirection == "right") {
+              this.bullet.setVelocityX(gameOptions.bulletSpeed);
+            }
+            else if(manDirection == "left") {
+              this.bullet.setVelocityX(-gameOptions.bulletSpeed);
+            }
+            else if(manDirection == "up") {
+              this.bullet.setVelocityY(-gameOptions.bulletSpeed);
+            }
+            else if(manDirection == "down") {
+              this.bullet.setVelocityY(gameOptions.bulletSpeed);
+            }
+          }*/
       if (this.cursors.left.isDown) {
         this.man.body.velocity.x = -gameOptions.manSpeed;
         this.man.body.velocity.y = 0;
