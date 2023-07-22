@@ -1,22 +1,24 @@
- import "./styles.css";
-import images from "../assets/*.png";
+import "./styles.css";
+//import Phaser from "phaser";
 
-
+//Global variables:
 let game;
 let numflowers = 0;
 let numBlocks = 0;
 let level = 1;
 let x, y;
-let manDirection = "right";
 let isMouseClicked = false;
-
+let score = 0;
+let numMen;
+let scores = [{ name: "Bob", score: -1000}];
 
 const gameOptions = {
   maxlevel: 3,
+  maxScores: 3,
   manGravity: 0,
   manSpeed: 150,
   blocksize: 60,
-  numMen: 3,
+  maxMen: 1,
   numBlueFlowers: 10,
   numRedFlowers: 8,
   redFlowerScore: 20,
@@ -33,7 +35,7 @@ const gameOptions = {
   bulletSpeed: 800,
   enemyInterval: [7000, 5500, 3500],
   moveBlockInterval: [5000, 3500, 2000],
-  butterflyRateOfEnemies: [0.7, 0.6, 0.5],
+  butterflyRateOfEnemies: [0.1, 0.6, 0.5],
   overlapDistance: 30,
   maps: [
     [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -92,8 +94,8 @@ window.onload = function() {
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: gameOptions.blocksize * gameOptions.xblocks + 200,
-        height: gameOptions.blocksize * gameOptions.yblocks + 100
+        width: gameOptions.blocksize * gameOptions.xblocks,
+        height: gameOptions.blocksize * gameOptions.yblocks + 120
     },
     pixelArt: true,
     physics: {
@@ -104,7 +106,7 @@ window.onload = function() {
             }
         }
     },
-    scene: PlayGame
+    scene: [PlayGame, ScoreBoard, InputPanel]
   };
   
   game = new Phaser.Game(gameConfig);
@@ -112,11 +114,152 @@ window.onload = function() {
 }
 
 
+class InputPanel extends Phaser.Scene {
+  constructor(data) {
+    super("InputPanel");
+
+    this.chars = [
+      ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
+      ["K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"],
+      ["U", "V", "W", "X", "Y", "Z", ".", "-", "<", ">"]
+    ];
+
+    this.charLimit = 8;
+  }
+
+  create(data) {
+    this.padding = data.padding;
+    this.letterSpacing = 20;
+    this.charWidth = 40;
+    this.charHeight = 40;
+    this.lineHeight = 2;
+    this.name = "";
+
+    let text;
+    for (let i = 0; i < this.chars.length; i++) {
+      for (let j = 0; j < this.chars[i].length; j++) {
+        let xx = this.padding + j * (this.charWidth + this.letterSpacing);
+        let yy = 50 + i * (this.charHeight + this.lineHeight);
+        text = this.add.text(xx, yy, this.chars[i][j], {fontSize: "40px", fill: "#000000", fontStyle: "bold"});
+      }
+    }
+  }
+
+  update(time, delta) {
+    if(!this.input.activePointer.isDown && isMouseClicked == true){
+      let mouseX = this.input.activePointer.x;
+      let mouseY = this.input.activePointer.y;
+      let xx = (mouseX - this.padding - this.charWidth/4) / (this.charWidth + this.letterSpacing);
+      let yy = (mouseY - 50 - this.charHeight/2) / (this.charHeight + this.lineHeight);
+      xx = Math.abs(Math.round(xx));
+      yy = Math.abs(Math.round(yy));
+      isMouseClicked= false;
+      if(xx < 0 || xx > this.chars[0].length || yy < 0 || yy > this.chars.length) {
+        return;
+      }
+      if(this.chars[yy][xx] == "<") {
+        this.name = this.name.substring(0, this.name.length - 1);
+        this.events.emit("updateName", this.name);
+      }
+      else if(this.chars[yy][xx] == ">") {
+        this.events.emit("submitName", this.name);
+      }
+      else if(this.name.length < this.charLimit) {
+        this.name = this.name.concat(this.chars[yy][xx]);
+        this.events.emit("updateName", this.name);
+      }
+    }
+    else if(this.input.activePointer.isDown && isMouseClicked == false) {
+      isMouseClicked = true;
+    }
+  }
+}
+
+
+
+class ScoreBoard extends Phaser.Scene {
+  constructor() {
+    super("ScoreBoard");
+  }
+
+  create() {
+    this.index = 0;
+    this.scene.bringToTop();
+
+    this.add.text(100, 300, "Score   Name", {fontSize: "40px", fill: "#000000", fontStyle: "bold"});
+    let isOnScoreBoard = false;
+    for(let i = 0; i < scores.length; i++) {
+      if(score > scores[i].score && !isOnScoreBoard){
+        this.add.text(100, 300 + (i+1) * 50, score, {fontSize: "40px", fill: "#000000", fontStyle: "bold"});
+        this.playerText = this.add.text(300, 300 + (i+1) * 50, "", {fontSize: "40px", fill: "#000000", fontStyle: "bold"});
+        isOnScoreBoard = true;
+        if(scores.length >= gameOptions.maxScores) {
+          scores.pop();
+        }
+        scores.splice(i, 0, {name: "", score: score});
+        this.index = i;
+      }
+      else {
+        this.add.text(100, 300 + (i+1) * 50, scores[i].score, {fontSize: "40px", fill: "#000000", fontStyle: "bold"});
+        this.add.text(300, 300 + (i+1) * 50, scores[i].name, {fontSize: "40px", fill: "#000000", fontStyle: "bold"});
+      }
+    }
+
+    if (isOnScoreBoard) {
+      this.nameText = this.add.text(100, 200, "", {fontSize: "40px", fill: "#cccccc", fontStyle: "bold"})
+      this.input.keyboard.enabled = false;
+      this.scene.launch("InputPanel", { padding: 100 });
+      this.panel = this.scene.get("InputPanel");
+      this.panel.events.on("updateName", this.updateName, this);
+      this.panel.events.on("submitName", this.submitName, this);
+    }
+    else {
+      this.time.addEvent({
+        delay: 3000,
+        callback: ()=>{
+          level = 1;
+          score = 0;
+          numMen = gameOptions.maxMen;
+          this.scene.stop();
+          this.scene.start("PlayGame");
+        },
+        loop: false
+      })
+    }
+  }
+
+  submitName() {
+    this.scene.stop("InputPanel");
+    this.playerText.setText(this.nameText.text);
+    scores[this.index].name = this.nameText.text;
+    this.nameText.setText("");
+    this.time.addEvent({
+      delay: 3000,
+      callback: ()=>{
+        this.panel.events.removeListener("updateName");
+        this.panel.events.removeListener("submitName");
+        this.scene.stop();
+        level = 1;
+        score = 0;
+        numMen = gameOptions.maxMen;
+        this.scene.start("PlayGame");
+      },
+      loop: false
+    })
+  }
+
+  updateName(name) {
+    this.nameText.setText(name);
+  }
+}
+
+
+
 class PlayGame extends Phaser.Scene {
 
   constructor() {
       super("PlayGame");
-      this.score = 0;
+      numMen = gameOptions.maxMen;
   }
 
   preload() {
@@ -136,6 +279,7 @@ class PlayGame extends Phaser.Scene {
   create() {
     let flowers = [];
     let blocks = [];
+    this.scene.stop("ScoreBoard");
 
     this.blockGroup = this.physics.add.group({
       immovable: true,
@@ -153,8 +297,8 @@ class PlayGame extends Phaser.Scene {
     // set the wall blocks
     x = 0;
     y = 0;
+    numBlocks = 0;
     gameOptions.maps[level-1].forEach((square) => {
-//      console.log("ruutu: ",x,y,square)
       if(square == 0) {
         this.blockGroup.create(x*gameOptions.blocksize + gameOptions.blocksize/2, y*gameOptions.blocksize + gameOptions.blocksize/2, "block");
         blocks[numBlocks] = {x: x*gameOptions.blocksize + gameOptions.blocksize/2, y: y*gameOptions.blocksize + gameOptions.blocksize/2};
@@ -167,6 +311,7 @@ class PlayGame extends Phaser.Scene {
       x++;
     });
 
+    numflowers = 0;
     for(let i = 0; i < gameOptions.numBlueFlowers; i++) {
       x = Phaser.Math.Between(1, gameOptions.xblocks-2) * gameOptions.blocksize + gameOptions.blocksize/2;
       y = Phaser.Math.Between(1, gameOptions.yblocks-2) * gameOptions.blocksize + gameOptions.blocksize/2;
@@ -276,17 +421,17 @@ class PlayGame extends Phaser.Scene {
     this.physics.add.overlap(this.man, this.waspGroup, this.waspStings, this.isCloseEnough, this);
 
     this.gameText = this.add.text(0, 0, `Level ${level}/${gameOptions.maxlevel}`, {fontSize: "36px", fill: "#000000", fontStyle: "bold"})
-    this.scoreText = this.add.text(game.config.width - 1.75*gameOptions.blocksize, gameOptions.blocksize/2, this.score, {fontSize: "36px", fill: "#000000", fontStyle: "bold"});
-    for (let i = 1; i <= gameOptions.numMen; i++) {
+    this.scoreText = this.add.text(game.config.width - 1.75*gameOptions.blocksize, gameOptions.blocksize/2, score, {fontSize: "36px", fill: "#000000", fontStyle: "bold"});
+    for (let i = 1; i <= numMen; i++) {
       const img = this.add.image(game.config.width - i*gameOptions.blocksize/2, gameOptions.blocksize/4, "man");
       img.setScale(0.5);
     }
-    this.add.text(0, gameOptions.yblocks*gameOptions.blocksize, "Collect all flowers, but watch out for wasps and moving walls.", {fontSize: "28px", fill: "#000000", fontStyle: "bold"});
-    this.add.text(0, gameOptions.yblocks*gameOptions.blocksize + 28, "Butterflies will suck the flowers away...", {fontSize: "28px", fill: "#000000", fontStyle: "bold"});
-    this.add.text(0, gameOptions.yblocks*gameOptions.blocksize + 28*2, "You can shoot the insects with the mouse and gain more points.", {fontSize: "28px", fill: "#000000", fontStyle: "bold"});
+    this.add.text(0, gameOptions.yblocks*gameOptions.blocksize, "Pick all flowers, but watch out for wasps and ", {fontSize: "28px", fill: "#000000", fontStyle: "bold"});
+    this.add.text(0, gameOptions.yblocks*gameOptions.blocksize + 28, "moving walls. Butterflies will suck flowers...", {fontSize: "28px", fill: "#000000", fontStyle: "bold"});
+    this.add.text(0, gameOptions.yblocks*gameOptions.blocksize + 28*2, "You can shoot the insects with the mouse and gain ", {fontSize: "28px", fill: "#000000", fontStyle: "bold"});
+    this.add.text(0, gameOptions.yblocks*gameOptions.blocksize + 28*3, "more points.", {fontSize: "28px", fill: "#000000", fontStyle: "bold"});
 
     this.cursors = this.input.keyboard.createCursorKeys();
-//    this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
   }
 
   isCloseEnough(body1, body2) {
@@ -299,9 +444,9 @@ class PlayGame extends Phaser.Scene {
   collectFlower(man, flower) {
     flower.disableBody(true, true);
     this.collectSound.play();
-    if (flower.body.gameObject.texture.key == "flowerBlue") this.score += gameOptions.blueFlowerScore;
-    else this.score += gameOptions.redFlowerScore;
-    this.scoreText.setText(this.score);
+    if (flower.body.gameObject.texture.key == "flowerBlue") score += gameOptions.blueFlowerScore;
+    else score += gameOptions.redFlowerScore;
+    this.scoreText.setText(score);
     numflowers --;
     if(numflowers == 0) { 
       this.time.removeAllEvents();
@@ -311,8 +456,8 @@ class PlayGame extends Phaser.Scene {
       this.waspGroup.getChildren().forEach(element => {
         element.disableBody(true, true);
       });
-      this.score += gameOptions.levelScore;
-      this.scoreText.setText(this.score);
+      score += gameOptions.levelScore;
+      this.scoreText.setText(score);
       if (level == gameOptions.maxlevel) { 
         this.gameText.setText(`Level ${level}/${gameOptions.maxlevel} completed, game finished`);
         this.time.addEvent({
@@ -320,13 +465,11 @@ class PlayGame extends Phaser.Scene {
           callback: ()=>{
             numflowers = 0;
             numBlocks = 0;
-            this.score = 0;
             this.flowers = [];
             this.blocks = 0;
-            level = 1;
-            this.scene.start("PlayGame");
+            this.scene.start("ScoreBoard");
           },
-          loop: true
+          loop: false
         });
       }
       else {
@@ -342,7 +485,7 @@ class PlayGame extends Phaser.Scene {
             level ++;
             this.scene.start("PlayGame");
           },
-          loop: true
+          loop: false
         })
       }
     }
@@ -353,14 +496,14 @@ class PlayGame extends Phaser.Scene {
   butterflySucksFlower(butterfly, flower) {
     this.suckingSound.play();
     flower.disableBody(true, true);
-    if (flower.body.gameObject.texture.key == "flowerBlue") this.score -= gameOptions.blueFlowerScore/2;
-    else this.score -= gameOptions.redFlowerScore/2;
-    this.scoreText.setText(this.score);
+    if (flower.body.gameObject.texture.key == "flowerBlue") score -= gameOptions.blueFlowerScore/2;
+    else score -= gameOptions.redFlowerScore/2;
+    this.scoreText.setText(score);
     numflowers --;
     if(numflowers == 0) {
       this.time.removeAllEvents();
-      this.score += gameOptions.levelScore;
-      this.scoreText.setText(this.score);
+      score += gameOptions.levelScore;
+      this.scoreText.setText(score);
       this.butterflyGroup.getChildren().forEach(element => {
         element.disableBody(true, true);
       });
@@ -374,13 +517,11 @@ class PlayGame extends Phaser.Scene {
           callback: ()=>{
             numflowers = 0;
             numBlocks = 0;
-            this.score = 0;
             this.flowers = [];
             this.blocks = [];
-            level = 1;
-            this.scene.start("PlayGame");
+            this.scene.start("ScoreBoard");
           },
-          loop: true
+          loop: false
         });
       }
       else { 
@@ -396,7 +537,7 @@ class PlayGame extends Phaser.Scene {
             level ++;
             this.scene.start("PlayGame");
           },
-          loop: true
+          loop: false
         })
       }
     }
@@ -406,20 +547,18 @@ class PlayGame extends Phaser.Scene {
     this.stingSound.play();
     man.disableBody(true, true);
     this.time.removeAllEvents();
-    gameOptions.numMen--;
-    this.score += gameOptions.stingScore;
-    this.scoreText.setText(this.score)
-    if(gameOptions.numMen == 0) { 
-      this.gameText.setText(`Game over`);
-      level = 1;
-      this.score = 0;
-    }
+    numMen--;
+    score += gameOptions.stingScore;
+    this.scoreText.setText(score)
     this.butterflyGroup.getChildren().forEach(element => {
       element.disableBody(true, true);
     });
     this.waspGroup.getChildren().forEach(element => {
       element.disableBody(true, true);
     });
+    if(numMen == 0) { 
+      this.gameText.setText(`Game over`);
+    }
     this.time.addEvent({
       delay: 4000,
       callback: ()=>{
@@ -427,9 +566,14 @@ class PlayGame extends Phaser.Scene {
         numBlocks = 0;
         this.flowers = [];
         this.blocks = [];
-        this.scene.start("PlayGame");
+        if(numMen == 0) { 
+          this.scene.start("ScoreBoard");
+        }
+        else {
+          this.scene.start("PlayGame");
+        }
       },
-      loop: true
+      loop: false
     })
   }
 
@@ -502,11 +646,12 @@ class PlayGame extends Phaser.Scene {
   }
 
   shoot(bullet, target) {
+    this.collectSound.play();
     target.disableBody(true, true);
     bullet.disableBody(true, true);
-    if(target.texture.key == "wasp") this.score += gameOptions.shootWaspScore;
-    else if(target.texture.key == "butterfly") this.score += gameOptions.shootButterflyScore;
-    this.scoreText.setText(this.score);
+    if(target.texture.key == "wasp") score += gameOptions.shootWaspScore;
+    else if(target.texture.key == "butterfly") score += gameOptions.shootButterflyScore;
+    this.scoreText.setText(score);
   }
 
   update() {
@@ -526,42 +671,21 @@ class PlayGame extends Phaser.Scene {
     else if(this.input.activePointer.isDown && isMouseClicked == false) {
       isMouseClicked = true;
     }
-/*    if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-      this.bullet = this.physics.add.sprite(this.man.body.center.x, this.man.body.center.y, 'bullet');
-      this.physics.add.overlap(this.bullet, this.butterflyGroup, this.shoot, null, this);
-      this.physics.add.overlap(this.bullet, this.waspGroup, this.shoot, null, this);
-      if(manDirection == "right") {
-        this.bullet.setVelocityX(gameOptions.bulletSpeed);
-      }
-      else if(manDirection == "left") {
-        this.bullet.setVelocityX(-gameOptions.bulletSpeed);
-      }
-      else if(manDirection == "up") {
-        this.bullet.setVelocityY(-gameOptions.bulletSpeed);
-      }
-      else if(manDirection == "down") {
-        this.bullet.setVelocityY(gameOptions.bulletSpeed);
-      }
-    }*/
     if(this.cursors.left.isDown) {
       this.man.body.velocity.x = -gameOptions.manSpeed;
       this.man.body.velocity.y = 0;
-      manDirection = "left";
     }
     else if(this.cursors.right.isDown) {
       this.man.body.velocity.x = gameOptions.manSpeed;
       this.man.body.velocity.y = 0;
-      manDirection = "right";
     }
     else if(this.cursors.up.isDown) {
       this.man.body.velocity.y = -gameOptions.manSpeed;
       this.man.body.velocity.x = 0;
-      manDirection = "up";
     }
     else if(this.cursors.down.isDown) {
       this.man.body.velocity.y = gameOptions.manSpeed;
       this.man.body.velocity.x = 0;
-      manDirection = "down";
     }
     else{
       this.man.body.velocity.x = 0;
@@ -569,3 +693,6 @@ class PlayGame extends Phaser.Scene {
     }
   }
 }
+
+
+

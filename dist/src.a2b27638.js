@@ -172,34 +172,19 @@ module.exports = reloadCSS;
 var reloadCSS = require('_css_loader');
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js"}],"assets/Butterfly.png":[function(require,module,exports) {
-module.exports = "/Butterfly.ef124cfb.png";
-},{}],"assets/block_grey.png":[function(require,module,exports) {
+},{"_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js"}],"assets/block_grey.png":[function(require,module,exports) {
 module.exports = "/block_grey.24e50b4a.png";
-},{}],"assets/block_white.png":[function(require,module,exports) {
-module.exports = "/block_white.e3071701.png";
-},{}],"assets/bullet.png":[function(require,module,exports) {
-module.exports = "/bullet.6a8026eb.png";
 },{}],"assets/flower_blue.png":[function(require,module,exports) {
 module.exports = "/flower_blue.f3c2aa35.png";
 },{}],"assets/flower_red.png":[function(require,module,exports) {
 module.exports = "/flower_red.525bdadf.png";
 },{}],"assets/man.png":[function(require,module,exports) {
 module.exports = "/man.d245246d.png";
+},{}],"assets/Butterfly.png":[function(require,module,exports) {
+module.exports = "/Butterfly.ef124cfb.png";
 },{}],"assets/wasp.png":[function(require,module,exports) {
 module.exports = "/wasp.5290b4dc.png";
-},{}],"assets/*.png":[function(require,module,exports) {
-module.exports = {
-  "Butterfly": require("./Butterfly.png"),
-  "block_grey": require("./block_grey.png"),
-  "block_white": require("./block_white.png"),
-  "bullet": require("./bullet.png"),
-  "flower_blue": require("./flower_blue.png"),
-  "flower_red": require("./flower_red.png"),
-  "man": require("./man.png"),
-  "wasp": require("./wasp.png")
-};
-},{"./Butterfly.png":"assets/Butterfly.png","./block_grey.png":"assets/block_grey.png","./block_white.png":"assets/block_white.png","./bullet.png":"assets/bullet.png","./flower_blue.png":"assets/flower_blue.png","./flower_red.png":"assets/flower_red.png","./man.png":"assets/man.png","./wasp.png":"assets/wasp.png"}],"assets/bzzz.mp3":[function(require,module,exports) {
+},{}],"assets/bzzz.mp3":[function(require,module,exports) {
 module.exports = "/bzzz.dbc72e92.mp3";
 },{}],"assets/suck.mp3":[function(require,module,exports) {
 module.exports = "/suck.12e85f33.mp3";
@@ -207,12 +192,12 @@ module.exports = "/suck.12e85f33.mp3";
 module.exports = "/collect.e2965fb0.mp3";
 },{}],"assets/shot.mp3":[function(require,module,exports) {
 module.exports = "/shot.3bd1b90b.mp3";
+},{}],"assets/bullet.png":[function(require,module,exports) {
+module.exports = "/bullet.6a8026eb.png";
 },{}],"src/index.js":[function(require,module,exports) {
 "use strict";
 
 require("./styles.css");
-var _ = _interopRequireDefault(require("../assets/*.png"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
@@ -226,19 +211,27 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+//import Phaser from "phaser";
+//Global variables:
 var game;
 var numflowers = 0;
 var numBlocks = 0;
 var level = 1;
 var x, y;
-var manDirection = "right";
 var isMouseClicked = false;
+var score = 0;
+var numMen;
+var scores = [{
+  name: "Bob",
+  score: -1000
+}];
 var gameOptions = {
   maxlevel: 3,
+  maxScores: 3,
   manGravity: 0,
   manSpeed: 150,
   blocksize: 60,
-  numMen: 3,
+  maxMen: 1,
   numBlueFlowers: 10,
   numRedFlowers: 8,
   redFlowerScore: 20,
@@ -255,7 +248,7 @@ var gameOptions = {
   bulletSpeed: 800,
   enemyInterval: [7000, 5500, 3500],
   moveBlockInterval: [5000, 3500, 2000],
-  butterflyRateOfEnemies: [0.7, 0.6, 0.5],
+  butterflyRateOfEnemies: [0.1, 0.6, 0.5],
   overlapDistance: 30,
   maps: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, 0, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, 0, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, -1, -1, 0, 0, -1, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, 0, -1, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, 0, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, -1, -1, 0, 0, 0, 0, 0, -1, 0, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, 0, -1, -1, -1, -1, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, 0, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, -1, -1, -1, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, -1, -1, 0, -1, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, -1, -1, 0, -1, -1, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 };
@@ -266,8 +259,8 @@ window.onload = function () {
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
-      width: gameOptions.blocksize * gameOptions.xblocks + 200,
-      height: gameOptions.blocksize * gameOptions.yblocks + 100
+      width: gameOptions.blocksize * gameOptions.xblocks,
+      height: gameOptions.blocksize * gameOptions.yblocks + 120
     },
     pixelArt: true,
     physics: {
@@ -278,20 +271,193 @@ window.onload = function () {
         }
       }
     },
-    scene: PlayGame
+    scene: [PlayGame, ScoreBoard, InputPanel]
   };
   game = new Phaser.Game(gameConfig);
   window.focus();
 };
-var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
-  _inherits(PlayGame, _Phaser$Scene);
-  var _super = _createSuper(PlayGame);
-  function PlayGame() {
+var InputPanel = /*#__PURE__*/function (_Phaser$Scene) {
+  _inherits(InputPanel, _Phaser$Scene);
+  var _super = _createSuper(InputPanel);
+  function InputPanel(data) {
     var _this;
-    _classCallCheck(this, PlayGame);
-    _this = _super.call(this, "PlayGame");
-    _this.score = 0;
+    _classCallCheck(this, InputPanel);
+    _this = _super.call(this, "InputPanel");
+    _this.chars = [["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"], ["K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"], ["U", "V", "W", "X", "Y", "Z", ".", "-", "<", ">"]];
+    _this.charLimit = 8;
     return _this;
+  }
+  _createClass(InputPanel, [{
+    key: "create",
+    value: function create(data) {
+      this.padding = data.padding;
+      this.letterSpacing = 20;
+      this.charWidth = 40;
+      this.charHeight = 40;
+      this.lineHeight = 2;
+      this.name = "";
+      var text;
+      for (var i = 0; i < this.chars.length; i++) {
+        for (var j = 0; j < this.chars[i].length; j++) {
+          var xx = this.padding + j * (this.charWidth + this.letterSpacing);
+          var yy = 50 + i * (this.charHeight + this.lineHeight);
+          text = this.add.text(xx, yy, this.chars[i][j], {
+            fontSize: "40px",
+            fill: "#000000",
+            fontStyle: "bold"
+          });
+        }
+      }
+    }
+  }, {
+    key: "update",
+    value: function update(time, delta) {
+      if (!this.input.activePointer.isDown && isMouseClicked == true) {
+        var mouseX = this.input.activePointer.x;
+        var mouseY = this.input.activePointer.y;
+        var xx = (mouseX - this.padding - this.charWidth / 4) / (this.charWidth + this.letterSpacing);
+        var yy = (mouseY - 50 - this.charHeight / 2) / (this.charHeight + this.lineHeight);
+        xx = Math.abs(Math.round(xx));
+        yy = Math.abs(Math.round(yy));
+        isMouseClicked = false;
+        if (xx < 0 || xx > this.chars[0].length || yy < 0 || yy > this.chars.length) {
+          return;
+        }
+        if (this.chars[yy][xx] == "<") {
+          this.name = this.name.substring(0, this.name.length - 1);
+          this.events.emit("updateName", this.name);
+        } else if (this.chars[yy][xx] == ">") {
+          this.events.emit("submitName", this.name);
+        } else if (this.name.length < this.charLimit) {
+          this.name = this.name.concat(this.chars[yy][xx]);
+          this.events.emit("updateName", this.name);
+        }
+      } else if (this.input.activePointer.isDown && isMouseClicked == false) {
+        isMouseClicked = true;
+      }
+    }
+  }]);
+  return InputPanel;
+}(Phaser.Scene);
+var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene2) {
+  _inherits(ScoreBoard, _Phaser$Scene2);
+  var _super2 = _createSuper(ScoreBoard);
+  function ScoreBoard() {
+    _classCallCheck(this, ScoreBoard);
+    return _super2.call(this, "ScoreBoard");
+  }
+  _createClass(ScoreBoard, [{
+    key: "create",
+    value: function create() {
+      var _this2 = this;
+      this.index = 0;
+      this.scene.bringToTop();
+      this.add.text(100, 300, "Score   Name", {
+        fontSize: "40px",
+        fill: "#000000",
+        fontStyle: "bold"
+      });
+      var isOnScoreBoard = false;
+      for (var i = 0; i < scores.length; i++) {
+        if (score > scores[i].score && !isOnScoreBoard) {
+          this.add.text(100, 300 + (i + 1) * 50, score, {
+            fontSize: "40px",
+            fill: "#000000",
+            fontStyle: "bold"
+          });
+          this.playerText = this.add.text(300, 300 + (i + 1) * 50, "", {
+            fontSize: "40px",
+            fill: "#000000",
+            fontStyle: "bold"
+          });
+          isOnScoreBoard = true;
+          if (scores.length >= gameOptions.maxScores) {
+            scores.pop();
+          }
+          scores.splice(i, 0, {
+            name: "",
+            score: score
+          });
+          this.index = i;
+        } else {
+          this.add.text(100, 300 + (i + 1) * 50, scores[i].score, {
+            fontSize: "40px",
+            fill: "#000000",
+            fontStyle: "bold"
+          });
+          this.add.text(300, 300 + (i + 1) * 50, scores[i].name, {
+            fontSize: "40px",
+            fill: "#000000",
+            fontStyle: "bold"
+          });
+        }
+      }
+      if (isOnScoreBoard) {
+        this.nameText = this.add.text(100, 200, "", {
+          fontSize: "40px",
+          fill: "#cccccc",
+          fontStyle: "bold"
+        });
+        this.input.keyboard.enabled = false;
+        this.scene.launch("InputPanel", {
+          padding: 100
+        });
+        this.panel = this.scene.get("InputPanel");
+        this.panel.events.on("updateName", this.updateName, this);
+        this.panel.events.on("submitName", this.submitName, this);
+      } else {
+        this.time.addEvent({
+          delay: 3000,
+          callback: function callback() {
+            level = 1;
+            score = 0;
+            numMen = gameOptions.maxMen;
+            _this2.scene.stop();
+            _this2.scene.start("PlayGame");
+          },
+          loop: false
+        });
+      }
+    }
+  }, {
+    key: "submitName",
+    value: function submitName() {
+      var _this3 = this;
+      this.scene.stop("InputPanel");
+      this.playerText.setText(this.nameText.text);
+      scores[this.index].name = this.nameText.text;
+      this.nameText.setText("");
+      this.time.addEvent({
+        delay: 3000,
+        callback: function callback() {
+          _this3.panel.events.removeListener("updateName");
+          _this3.panel.events.removeListener("submitName");
+          _this3.scene.stop();
+          level = 1;
+          score = 0;
+          numMen = gameOptions.maxMen;
+          _this3.scene.start("PlayGame");
+        },
+        loop: false
+      });
+    }
+  }, {
+    key: "updateName",
+    value: function updateName(name) {
+      this.nameText.setText(name);
+    }
+  }]);
+  return ScoreBoard;
+}(Phaser.Scene);
+var PlayGame = /*#__PURE__*/function (_Phaser$Scene3) {
+  _inherits(PlayGame, _Phaser$Scene3);
+  var _super3 = _createSuper(PlayGame);
+  function PlayGame() {
+    var _this4;
+    _classCallCheck(this, PlayGame);
+    _this4 = _super3.call(this, "PlayGame");
+    numMen = gameOptions.maxMen;
+    return _this4;
   }
   _createClass(PlayGame, [{
     key: "preload",
@@ -320,9 +486,10 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
   }, {
     key: "create",
     value: function create() {
-      var _this2 = this;
+      var _this5 = this;
       var flowers = [];
       var blocks = [];
+      this.scene.stop("ScoreBoard");
       this.blockGroup = this.physics.add.group({
         immovable: true,
         allowGravity: false
@@ -339,10 +506,10 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
       // set the wall blocks
       x = 0;
       y = 0;
+      numBlocks = 0;
       gameOptions.maps[level - 1].forEach(function (square) {
-        //      console.log("ruutu: ",x,y,square)
         if (square == 0) {
-          _this2.blockGroup.create(x * gameOptions.blocksize + gameOptions.blocksize / 2, y * gameOptions.blocksize + gameOptions.blocksize / 2, "block");
+          _this5.blockGroup.create(x * gameOptions.blocksize + gameOptions.blocksize / 2, y * gameOptions.blocksize + gameOptions.blocksize / 2, "block");
           blocks[numBlocks] = {
             x: x * gameOptions.blocksize + gameOptions.blocksize / 2,
             y: y * gameOptions.blocksize + gameOptions.blocksize / 2
@@ -355,6 +522,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
         }
         x++;
       });
+      numflowers = 0;
       for (var i = 0; i < gameOptions.numBlueFlowers; i++) {
         x = Phaser.Math.Between(1, gameOptions.xblocks - 2) * gameOptions.blocksize + gameOptions.blocksize / 2;
         y = Phaser.Math.Between(1, gameOptions.yblocks - 2) * gameOptions.blocksize + gameOptions.blocksize / 2;
@@ -483,32 +651,36 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
         fill: "#000000",
         fontStyle: "bold"
       });
-      this.scoreText = this.add.text(game.config.width - 1.75 * gameOptions.blocksize, gameOptions.blocksize / 2, this.score, {
+      this.scoreText = this.add.text(game.config.width - 1.75 * gameOptions.blocksize, gameOptions.blocksize / 2, score, {
         fontSize: "36px",
         fill: "#000000",
         fontStyle: "bold"
       });
-      for (var _i2 = 1; _i2 <= gameOptions.numMen; _i2++) {
+      for (var _i2 = 1; _i2 <= numMen; _i2++) {
         var img = this.add.image(game.config.width - _i2 * gameOptions.blocksize / 2, gameOptions.blocksize / 4, "man");
         img.setScale(0.5);
       }
-      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize, "Collect all flowers, but watch out for wasps and moving walls.", {
+      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize, "Pick all flowers, but watch out for wasps and ", {
         fontSize: "28px",
         fill: "#000000",
         fontStyle: "bold"
       });
-      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28, "Butterflies will suck the flowers away...", {
+      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28, "moving walls. Butterflies will suck flowers...", {
         fontSize: "28px",
         fill: "#000000",
         fontStyle: "bold"
       });
-      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28 * 2, "You can shoot the insects with the mouse and gain more points.", {
+      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28 * 2, "You can shoot the insects with the mouse and gain ", {
+        fontSize: "28px",
+        fill: "#000000",
+        fontStyle: "bold"
+      });
+      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28 * 3, "more points.", {
         fontSize: "28px",
         fill: "#000000",
         fontStyle: "bold"
       });
       this.cursors = this.input.keyboard.createCursorKeys();
-      //    this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
   }, {
     key: "isCloseEnough",
@@ -521,11 +693,11 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
   }, {
     key: "collectFlower",
     value: function collectFlower(man, flower) {
-      var _this3 = this;
+      var _this6 = this;
       flower.disableBody(true, true);
       this.collectSound.play();
-      if (flower.body.gameObject.texture.key == "flowerBlue") this.score += gameOptions.blueFlowerScore;else this.score += gameOptions.redFlowerScore;
-      this.scoreText.setText(this.score);
+      if (flower.body.gameObject.texture.key == "flowerBlue") score += gameOptions.blueFlowerScore;else score += gameOptions.redFlowerScore;
+      this.scoreText.setText(score);
       numflowers--;
       if (numflowers == 0) {
         this.time.removeAllEvents();
@@ -535,8 +707,8 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
         this.waspGroup.getChildren().forEach(function (element) {
           element.disableBody(true, true);
         });
-        this.score += gameOptions.levelScore;
-        this.scoreText.setText(this.score);
+        score += gameOptions.levelScore;
+        this.scoreText.setText(score);
         if (level == gameOptions.maxlevel) {
           this.gameText.setText("Level ".concat(level, "/").concat(gameOptions.maxlevel, " completed, game finished"));
           this.time.addEvent({
@@ -544,13 +716,11 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
             callback: function callback() {
               numflowers = 0;
               numBlocks = 0;
-              _this3.score = 0;
-              _this3.flowers = [];
-              _this3.blocks = 0;
-              level = 1;
-              _this3.scene.start("PlayGame");
+              _this6.flowers = [];
+              _this6.blocks = 0;
+              _this6.scene.start("ScoreBoard");
             },
-            loop: true
+            loop: false
           });
         } else {
           this.gameText.setText("Level ".concat(level, "/").concat(gameOptions.maxlevel, " completed"));
@@ -559,13 +729,13 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
             callback: function callback() {
               numflowers = 0;
               numBlocks = 0;
-              _this3.flowers = [];
-              _this3.blocks = [];
+              _this6.flowers = [];
+              _this6.blocks = [];
               // seuraava level:
               level++;
-              _this3.scene.start("PlayGame");
+              _this6.scene.start("PlayGame");
             },
-            loop: true
+            loop: false
           });
         }
       }
@@ -573,16 +743,16 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
   }, {
     key: "butterflySucksFlower",
     value: function butterflySucksFlower(butterfly, flower) {
-      var _this4 = this;
+      var _this7 = this;
       this.suckingSound.play();
       flower.disableBody(true, true);
-      if (flower.body.gameObject.texture.key == "flowerBlue") this.score -= gameOptions.blueFlowerScore / 2;else this.score -= gameOptions.redFlowerScore / 2;
-      this.scoreText.setText(this.score);
+      if (flower.body.gameObject.texture.key == "flowerBlue") score -= gameOptions.blueFlowerScore / 2;else score -= gameOptions.redFlowerScore / 2;
+      this.scoreText.setText(score);
       numflowers--;
       if (numflowers == 0) {
         this.time.removeAllEvents();
-        this.score += gameOptions.levelScore;
-        this.scoreText.setText(this.score);
+        score += gameOptions.levelScore;
+        this.scoreText.setText(score);
         this.butterflyGroup.getChildren().forEach(function (element) {
           element.disableBody(true, true);
         });
@@ -596,13 +766,11 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
             callback: function callback() {
               numflowers = 0;
               numBlocks = 0;
-              _this4.score = 0;
-              _this4.flowers = [];
-              _this4.blocks = [];
-              level = 1;
-              _this4.scene.start("PlayGame");
+              _this7.flowers = [];
+              _this7.blocks = [];
+              _this7.scene.start("ScoreBoard");
             },
-            loop: true
+            loop: false
           });
         } else {
           this.gameText.setText("Level ".concat(level, "/").concat(gameOptions.maxlevel, " completed"));
@@ -611,13 +779,13 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
             callback: function callback() {
               numflowers = 0;
               numBlocks = 0;
-              _this4.flowers = [];
-              _this4.blocks = [];
+              _this7.flowers = [];
+              _this7.blocks = [];
               // seuraava level:
               level++;
-              _this4.scene.start("PlayGame");
+              _this7.scene.start("PlayGame");
             },
-            loop: true
+            loop: false
           });
         }
       }
@@ -625,34 +793,36 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
   }, {
     key: "waspStings",
     value: function waspStings(man, wasp) {
-      var _this5 = this;
+      var _this8 = this;
       this.stingSound.play();
       man.disableBody(true, true);
       this.time.removeAllEvents();
-      gameOptions.numMen--;
-      this.score += gameOptions.stingScore;
-      this.scoreText.setText(this.score);
-      if (gameOptions.numMen == 0) {
-        this.gameText.setText("Game over");
-        level = 1;
-        this.score = 0;
-      }
+      numMen--;
+      score += gameOptions.stingScore;
+      this.scoreText.setText(score);
       this.butterflyGroup.getChildren().forEach(function (element) {
         element.disableBody(true, true);
       });
       this.waspGroup.getChildren().forEach(function (element) {
         element.disableBody(true, true);
       });
+      if (numMen == 0) {
+        this.gameText.setText("Game over");
+      }
       this.time.addEvent({
         delay: 4000,
         callback: function callback() {
           numflowers = 0;
           numBlocks = 0;
-          _this5.flowers = [];
-          _this5.blocks = [];
-          _this5.scene.start("PlayGame");
+          _this8.flowers = [];
+          _this8.blocks = [];
+          if (numMen == 0) {
+            _this8.scene.start("ScoreBoard");
+          } else {
+            _this8.scene.start("PlayGame");
+          }
         },
-        loop: true
+        loop: false
       });
     }
   }, {
@@ -728,10 +898,11 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
   }, {
     key: "shoot",
     value: function shoot(bullet, target) {
+      this.collectSound.play();
       target.disableBody(true, true);
       bullet.disableBody(true, true);
-      if (target.texture.key == "wasp") this.score += gameOptions.shootWaspScore;else if (target.texture.key == "butterfly") this.score += gameOptions.shootButterflyScore;
-      this.scoreText.setText(this.score);
+      if (target.texture.key == "wasp") score += gameOptions.shootWaspScore;else if (target.texture.key == "butterfly") score += gameOptions.shootButterflyScore;
+      this.scoreText.setText(score);
     }
   }, {
     key: "update",
@@ -751,39 +922,18 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
       } else if (this.input.activePointer.isDown && isMouseClicked == false) {
         isMouseClicked = true;
       }
-      /*    if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-            this.bullet = this.physics.add.sprite(this.man.body.center.x, this.man.body.center.y, 'bullet');
-            this.physics.add.overlap(this.bullet, this.butterflyGroup, this.shoot, null, this);
-            this.physics.add.overlap(this.bullet, this.waspGroup, this.shoot, null, this);
-            if(manDirection == "right") {
-              this.bullet.setVelocityX(gameOptions.bulletSpeed);
-            }
-            else if(manDirection == "left") {
-              this.bullet.setVelocityX(-gameOptions.bulletSpeed);
-            }
-            else if(manDirection == "up") {
-              this.bullet.setVelocityY(-gameOptions.bulletSpeed);
-            }
-            else if(manDirection == "down") {
-              this.bullet.setVelocityY(gameOptions.bulletSpeed);
-            }
-          }*/
       if (this.cursors.left.isDown) {
         this.man.body.velocity.x = -gameOptions.manSpeed;
         this.man.body.velocity.y = 0;
-        manDirection = "left";
       } else if (this.cursors.right.isDown) {
         this.man.body.velocity.x = gameOptions.manSpeed;
         this.man.body.velocity.y = 0;
-        manDirection = "right";
       } else if (this.cursors.up.isDown) {
         this.man.body.velocity.y = -gameOptions.manSpeed;
         this.man.body.velocity.x = 0;
-        manDirection = "up";
       } else if (this.cursors.down.isDown) {
         this.man.body.velocity.y = gameOptions.manSpeed;
         this.man.body.velocity.x = 0;
-        manDirection = "down";
       } else {
         this.man.body.velocity.x = 0;
         this.man.body.velocity.y = 0;
@@ -792,7 +942,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
   }]);
   return PlayGame;
 }(Phaser.Scene);
-},{"./styles.css":"src/styles.css","../assets/*.png":"assets/*.png","../assets/block_grey.png":"assets/block_grey.png","../assets/flower_blue.png":"assets/flower_blue.png","../assets/flower_red.png":"assets/flower_red.png","../assets/man.png":"assets/man.png","../assets/Butterfly.png":"assets/Butterfly.png","../assets/wasp.png":"assets/wasp.png","../assets/bzzz.mp3":"assets/bzzz.mp3","../assets/suck.mp3":"assets/suck.mp3","../assets/collect.mp3":"assets/collect.mp3","../assets/shot.mp3":"assets/shot.mp3","../assets/bullet.png":"assets/bullet.png"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./styles.css":"src/styles.css","../assets/block_grey.png":"assets/block_grey.png","../assets/flower_blue.png":"assets/flower_blue.png","../assets/flower_red.png":"assets/flower_red.png","../assets/man.png":"assets/man.png","../assets/Butterfly.png":"assets/Butterfly.png","../assets/wasp.png":"assets/wasp.png","../assets/bzzz.mp3":"assets/bzzz.mp3","../assets/suck.mp3":"assets/suck.mp3","../assets/collect.mp3":"assets/collect.mp3","../assets/shot.mp3":"assets/shot.mp3","../assets/bullet.png":"assets/bullet.png"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
