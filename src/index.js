@@ -128,6 +128,8 @@ class PlayGame extends Phaser.Scene {
     this.load.spritesheet("wasp", require("../assets/wasp.png"), { frameWidth: 75, frameHeight: 75 });
     this.load.audio("sting", [require("../assets/bzzz.mp3")]);
     this.load.audio("suck", [require("../assets/suck.mp3")]);
+    this.load.audio("collect", [require("../assets/collect.mp3")]);
+    this.load.audio("shot", [require("../assets/shot.mp3")]);
     this.load.image("bullet", require("../assets/bullet.png"));
   }
 
@@ -222,6 +224,8 @@ class PlayGame extends Phaser.Scene {
 
     this.stingSound = this.sound.add("sting", {loop: false});
     this.suckingSound = this.sound.add("suck", {loop: false});
+    this.shotSound = this.sound.add("shot", {loop: false});
+    this.collectSound = this.sound.add("collect", {loop: false});
 
 // perhosen lento:
     this.anims.create({
@@ -282,9 +286,7 @@ class PlayGame extends Phaser.Scene {
     this.add.text(0, gameOptions.yblocks*gameOptions.blocksize + 28*2, "You can shoot the insects with the mouse and gain more points.", {fontSize: "28px", fill: "#000000", fontStyle: "bold"});
 
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    console.log(this.input)
-    this.mouse = this.input.mouse;
+//    this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
   }
 
   isCloseEnough(body1, body2) {
@@ -296,6 +298,7 @@ class PlayGame extends Phaser.Scene {
 
   collectFlower(man, flower) {
     flower.disableBody(true, true);
+    this.collectSound.play();
     if (flower.body.gameObject.texture.key == "flowerBlue") this.score += gameOptions.blueFlowerScore;
     else this.score += gameOptions.redFlowerScore;
     this.scoreText.setText(this.score);
@@ -508,6 +511,7 @@ class PlayGame extends Phaser.Scene {
 
   update() {
     if(!this.input.activePointer.isDown && isMouseClicked == true){
+      this.shotSound.play();
       this.bullet = this.physics.add.sprite(this.man.body.center.x, this.man.body.center.y, 'bullet');
       this.physics.add.overlap(this.bullet, this.butterflyGroup, this.shoot, this.isCloseEnough, this);
       this.physics.add.overlap(this.bullet, this.waspGroup, this.shoot, this.isCloseEnough, this);

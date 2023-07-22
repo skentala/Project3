@@ -203,6 +203,10 @@ module.exports = {
 module.exports = "/bzzz.dbc72e92.mp3";
 },{}],"assets/suck.mp3":[function(require,module,exports) {
 module.exports = "/suck.12e85f33.mp3";
+},{}],"assets/collect.mp3":[function(require,module,exports) {
+module.exports = "/collect.e2965fb0.mp3";
+},{}],"assets/shot.mp3":[function(require,module,exports) {
+module.exports = "/shot.3bd1b90b.mp3";
 },{}],"src/index.js":[function(require,module,exports) {
 "use strict";
 
@@ -309,6 +313,8 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
       });
       this.load.audio("sting", [require("../assets/bzzz.mp3")]);
       this.load.audio("suck", [require("../assets/suck.mp3")]);
+      this.load.audio("collect", [require("../assets/collect.mp3")]);
+      this.load.audio("shot", [require("../assets/shot.mp3")]);
       this.load.image("bullet", require("../assets/bullet.png"));
     }
   }, {
@@ -412,6 +418,12 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
       this.suckingSound = this.sound.add("suck", {
         loop: false
       });
+      this.shotSound = this.sound.add("shot", {
+        loop: false
+      });
+      this.collectSound = this.sound.add("collect", {
+        loop: false
+      });
 
       // perhosen lento:
       this.anims.create({
@@ -496,9 +508,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
         fontStyle: "bold"
       });
       this.cursors = this.input.keyboard.createCursorKeys();
-      this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-      console.log(this.input);
-      this.mouse = this.input.mouse;
+      //    this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
   }, {
     key: "isCloseEnough",
@@ -513,6 +523,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
     value: function collectFlower(man, flower) {
       var _this3 = this;
       flower.disableBody(true, true);
+      this.collectSound.play();
       if (flower.body.gameObject.texture.key == "flowerBlue") this.score += gameOptions.blueFlowerScore;else this.score += gameOptions.redFlowerScore;
       this.scoreText.setText(this.score);
       numflowers--;
@@ -726,6 +737,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
     key: "update",
     value: function update() {
       if (!this.input.activePointer.isDown && isMouseClicked == true) {
+        this.shotSound.play();
         this.bullet = this.physics.add.sprite(this.man.body.center.x, this.man.body.center.y, 'bullet');
         this.physics.add.overlap(this.bullet, this.butterflyGroup, this.shoot, this.isCloseEnough, this);
         this.physics.add.overlap(this.bullet, this.waspGroup, this.shoot, this.isCloseEnough, this);
@@ -780,7 +792,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene) {
   }]);
   return PlayGame;
 }(Phaser.Scene);
-},{"./styles.css":"src/styles.css","../assets/*.png":"assets/*.png","../assets/block_grey.png":"assets/block_grey.png","../assets/flower_blue.png":"assets/flower_blue.png","../assets/flower_red.png":"assets/flower_red.png","../assets/man.png":"assets/man.png","../assets/Butterfly.png":"assets/Butterfly.png","../assets/wasp.png":"assets/wasp.png","../assets/bzzz.mp3":"assets/bzzz.mp3","../assets/suck.mp3":"assets/suck.mp3","../assets/bullet.png":"assets/bullet.png"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./styles.css":"src/styles.css","../assets/*.png":"assets/*.png","../assets/block_grey.png":"assets/block_grey.png","../assets/flower_blue.png":"assets/flower_blue.png","../assets/flower_red.png":"assets/flower_red.png","../assets/man.png":"assets/man.png","../assets/Butterfly.png":"assets/Butterfly.png","../assets/wasp.png":"assets/wasp.png","../assets/bzzz.mp3":"assets/bzzz.mp3","../assets/suck.mp3":"assets/suck.mp3","../assets/collect.mp3":"assets/collect.mp3","../assets/shot.mp3":"assets/shot.mp3","../assets/bullet.png":"assets/bullet.png"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
