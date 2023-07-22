@@ -231,7 +231,7 @@ var gameOptions = {
   manGravity: 0,
   manSpeed: 150,
   blocksize: 60,
-  maxMen: 1,
+  maxMen: 3,
   numBlueFlowers: 10,
   numRedFlowers: 8,
   redFlowerScore: 20,
@@ -248,7 +248,7 @@ var gameOptions = {
   bulletSpeed: 800,
   enemyInterval: [7000, 5500, 3500],
   moveBlockInterval: [5000, 3500, 2000],
-  butterflyRateOfEnemies: [0.1, 0.6, 0.5],
+  butterflyRateOfEnemies: [0.7, 0.6, 0.5],
   overlapDistance: 30,
   maps: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, 0, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, 0, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, -1, -1, 0, 0, -1, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, 0, -1, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, 0, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, -1, -1, 0, 0, 0, 0, 0, -1, 0, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, 0, -1, -1, -1, -1, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, 0, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, -1, -1, -1, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, -1, -1, 0, -1, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, -1, -1, 0, -1, -1, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 };
@@ -276,79 +276,17 @@ window.onload = function () {
   game = new Phaser.Game(gameConfig);
   window.focus();
 };
-var InputPanel = /*#__PURE__*/function (_Phaser$Scene) {
-  _inherits(InputPanel, _Phaser$Scene);
-  var _super = _createSuper(InputPanel);
-  function InputPanel(data) {
-    _classCallCheck(this, InputPanel);
-    return _super.call(this, "InputPanel");
-  }
-  _createClass(InputPanel, [{
-    key: "create",
-    value: function create(data) {
-      this.chars = [["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"], ["K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"], ["U", "V", "W", "X", "Y", "Z", ".", "-", "<", ">"]];
-      this.charLimit = 8;
-      this.padding = data.padding;
-      this.letterSpacing = 20;
-      this.charWidth = 40;
-      this.charHeight = 40;
-      this.lineHeight = 2;
-      this.name = "";
-      var text;
-      for (var i = 0; i < this.chars.length; i++) {
-        for (var j = 0; j < this.chars[i].length; j++) {
-          var xx = this.padding + j * (this.charWidth + this.letterSpacing);
-          var yy = 50 + i * (this.charHeight + this.lineHeight);
-          text = this.add.text(xx, yy, this.chars[i][j], {
-            fontSize: "40px",
-            fill: "#000000",
-            fontStyle: "bold"
-          });
-        }
-      }
-    }
-  }, {
-    key: "update",
-    value: function update() {
-      if (!this.input.activePointer.isDown && isMouseClicked == true) {
-        var mouseX = this.input.activePointer.x;
-        var mouseY = this.input.activePointer.y;
-        var xx = (mouseX - this.padding - this.charWidth / 4) / (this.charWidth + this.letterSpacing);
-        var yy = (mouseY - 50 - this.charHeight / 2) / (this.charHeight + this.lineHeight);
-        xx = Math.abs(Math.round(xx));
-        yy = Math.abs(Math.round(yy));
-        isMouseClicked = false;
-        if (xx < 0 || xx > this.chars[0].length || yy < 0 || yy > this.chars.length) {
-          return;
-        }
-        if (this.chars[yy][xx] == "<") {
-          this.name = this.name.substring(0, this.name.length - 1);
-          this.events.emit("updateName", this.name);
-        } else if (this.chars[yy][xx] == ">") {
-          this.events.emit("submitName", this.name);
-        } else if (this.name.length < this.charLimit) {
-          this.name = this.name.concat(this.chars[yy][xx]);
-          this.events.emit("updateName", this.name);
-        }
-      } else if (this.input.activePointer.isDown && isMouseClicked == false) {
-        isMouseClicked = true;
-      }
-    }
-  }]);
-  return InputPanel;
-}(Phaser.Scene);
-var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene2) {
-  _inherits(ScoreBoard, _Phaser$Scene2);
-  var _super2 = _createSuper(ScoreBoard);
+var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
+  _inherits(ScoreBoard, _Phaser$Scene);
+  var _super = _createSuper(ScoreBoard);
   function ScoreBoard() {
     _classCallCheck(this, ScoreBoard);
-    return _super2.call(this, "ScoreBoard");
+    return _super.call(this, "ScoreBoard");
   }
   _createClass(ScoreBoard, [{
     key: "create",
     value: function create() {
       var _this = this;
-      //
       this.chars = [["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"], ["K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"], ["U", "V", "W", "X", "Y", "Z", ".", "-", "<", ">"]];
       this.charLimit = 8;
       this.padding = 100;
@@ -400,7 +338,6 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene2) {
         }
       }
       if (this.isOnScoreBoard) {
-        //
         var text;
         for (var _i = 0; _i < this.chars.length; _i++) {
           for (var j = 0; j < this.chars[_i].length; j++) {
@@ -413,22 +350,12 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene2) {
             });
           }
         }
-        //  
         this.nameText = this.add.text(100, 200, "", {
           fontSize: "40px",
           fill: "#cccccc",
           fontStyle: "bold"
         });
         this.input.keyboard.enabled = false;
-        //      this.scene.launch("InputPanel", { padding: 100 });
-        /*      this.panel = this.scene.get("InputPanel");
-              this.panel.events.on("updateName", this.updateName, this);
-              this.panel.events.on("submitName", this.submitName, this);
-        */
-        //
-        //      this.scene.events.on("updateName", this.updateName, this);
-        //      this.scene.events.on("submitName", this.submitName, this);
-        //
       } else {
         this.time.addEvent({
           delay: 3000,
@@ -454,12 +381,6 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene2) {
       this.time.addEvent({
         delay: 3000,
         callback: function callback() {
-          //        this.panel.events.removeListener("updateName");
-          //        this.panel.events.removeListener("submitName");
-          //
-          //        this.scene.events.removeListener("updateName");
-          //        this.scene.events.removeListener("submitName");
-          //
           _this2.scene.stop();
           level = 1;
           score = 0;
@@ -474,7 +395,6 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene2) {
     value: function updateName(name) {
       this.nameText.setText(name);
     }
-    //
   }, {
     key: "update",
     value: function update() {
@@ -494,31 +414,27 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene2) {
         }
         if (this.chars[yy][xx] == "<") {
           this.name = this.name.substring(0, this.name.length - 1);
-          //        this.events.emit("updateName", this.name);
           this.updateName(this.name);
         } else if (this.chars[yy][xx] == ">") {
-          //        this.events.emit("submitName", this.name);
           this.submitName();
         } else if (this.name.length < this.charLimit) {
           this.name = this.name.concat(this.chars[yy][xx]);
-          //        this.events.emit("updateName", this.name);
           this.updateName(this.name);
         }
       } else if (this.input.activePointer.isDown && isMouseClicked == false) {
         isMouseClicked = true;
       }
     }
-    //
   }]);
   return ScoreBoard;
 }(Phaser.Scene);
-var PlayGame = /*#__PURE__*/function (_Phaser$Scene3) {
-  _inherits(PlayGame, _Phaser$Scene3);
-  var _super3 = _createSuper(PlayGame);
+var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
+  _inherits(PlayGame, _Phaser$Scene2);
+  var _super2 = _createSuper(PlayGame);
   function PlayGame() {
     var _this3;
     _classCallCheck(this, PlayGame);
-    _this3 = _super3.call(this, "PlayGame");
+    _this3 = _super2.call(this, "PlayGame");
     numMen = gameOptions.maxMen;
     return _this3;
   }
@@ -656,7 +572,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene3) {
         loop: false
       });
 
-      // perhosen lento:
+      // butterfly flying:
       this.anims.create({
         key: "bfleft",
         frames: this.anims.generateFrameNumbers("butterfly", {
@@ -676,7 +592,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene3) {
         repeat: -1
       });
 
-      // ampiaisen lento:
+      // wasp flying:
       this.anims.create({
         key: "waspleft",
         frames: this.anims.generateFrameNumbers("wasp", {
@@ -794,7 +710,6 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene3) {
               numBlocks = 0;
               _this5.flowers = [];
               _this5.blocks = [];
-              // seuraava level:
               level++;
               _this5.scene.start("PlayGame");
             },
@@ -844,7 +759,6 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene3) {
               numBlocks = 0;
               _this6.flowers = [];
               _this6.blocks = [];
-              // seuraava level:
               level++;
               _this6.scene.start("PlayGame");
             },

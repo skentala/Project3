@@ -18,7 +18,7 @@ const gameOptions = {
   manGravity: 0,
   manSpeed: 150,
   blocksize: 60,
-  maxMen: 1,
+  maxMen: 3,
   numBlueFlowers: 10,
   numRedFlowers: 8,
   redFlowerScore: 20,
@@ -35,7 +35,7 @@ const gameOptions = {
   bulletSpeed: 800,
   enemyInterval: [7000, 5500, 3500],
   moveBlockInterval: [5000, 3500, 2000],
-  butterflyRateOfEnemies: [0.1, 0.6, 0.5],
+  butterflyRateOfEnemies: [0.7, 0.6, 0.5],
   overlapDistance: 30,
   maps: [
     [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
