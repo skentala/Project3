@@ -213,15 +213,16 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 //import Phaser from "phaser";
 //Global variables:
-var game;
-var numflowers = 0;
-var numBlocks = 0;
-var level = 1;
-var x, y;
-var isMouseClicked = false;
-var score = 0;
-var numMen;
+var game; //
+var numflowers = 0; // number of flowers still in the game
+var numBlocks = 0; // number of wall blocks added to the game area
+var level = 1; // current game level
+var x, y; // 
+var isMouseClicked = false; // was a mouse button clicked
+var score = 0; // current score
+var numMen; // curremt number of lives left
 var scores = [{
+  // score table
   name: "Bob",
   score: -1000
 }];

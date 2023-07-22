@@ -2,15 +2,17 @@ import "./styles.css";
 //import Phaser from "phaser";
 
 //Global variables:
-let game;
-let numflowers = 0;
-let numBlocks = 0;
-let level = 1;
-let x, y;
-let isMouseClicked = false;
-let score = 0;
-let numMen;
-let scores = [{ name: "Bob", score: -1000}];
+let game;                   //
+let numflowers = 0;         // number of flowers still in the game
+let numBlocks = 0;          // number of wall blocks added to the game area
+let level = 1;              // current game level
+let x, y;                   // 
+let isMouseClicked = false; // was a mouse button clicked
+let score = 0;              // current score
+let numMen;                 // curremt number of lives left
+let scores = [{             // score table
+  name: "Bob", score: -1000
+}];
 
 const gameOptions = {
   maxlevel: 3,
