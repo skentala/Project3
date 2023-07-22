@@ -106,73 +106,11 @@ window.onload = function() {
             }
         }
     },
-    scene: [PlayGame, ScoreBoard, InputPanel]
+    scene: [PlayGame, ScoreBoard]
   };
   
   game = new Phaser.Game(gameConfig);
   window.focus();
-}
-
-
-class InputPanel extends Phaser.Scene {
-  constructor(data) {
-    super("InputPanel");
-
-    this.chars = [
-      ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
-      ["K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"],
-      ["U", "V", "W", "X", "Y", "Z", ".", "-", "<", ">"]
-    ];
-
-    this.charLimit = 8;
-  }
-
-  create(data) {
-    this.padding = data.padding;
-    this.letterSpacing = 20;
-    this.charWidth = 40;
-    this.charHeight = 40;
-    this.lineHeight = 2;
-    this.name = "";
-
-    let text;
-    for (let i = 0; i < this.chars.length; i++) {
-      for (let j = 0; j < this.chars[i].length; j++) {
-        let xx = this.padding + j * (this.charWidth + this.letterSpacing);
-        let yy = 50 + i * (this.charHeight + this.lineHeight);
-        text = this.add.text(xx, yy, this.chars[i][j], {fontSize: "40px", fill: "#000000", fontStyle: "bold"});
-      }
-    }
-  }
-
-  update(time, delta) {
-    if(!this.input.activePointer.isDown && isMouseClicked == true){
-      let mouseX = this.input.activePointer.x;
-      let mouseY = this.input.activePointer.y;
-      let xx = (mouseX - this.padding - this.charWidth/4) / (this.charWidth + this.letterSpacing);
-      let yy = (mouseY - 50 - this.charHeight/2) / (this.charHeight + this.lineHeight);
-      xx = Math.abs(Math.round(xx));
-      yy = Math.abs(Math.round(yy));
-      isMouseClicked= false;
-      if(xx < 0 || xx > this.chars[0].length || yy < 0 || yy > this.chars.length) {
-        return;
-      }
-      if(this.chars[yy][xx] == "<") {
-        this.name = this.name.substring(0, this.name.length - 1);
-        this.events.emit("updateName", this.name);
-      }
-      else if(this.chars[yy][xx] == ">") {
-        this.events.emit("submitName", this.name);
-      }
-      else if(this.name.length < this.charLimit) {
-        this.name = this.name.concat(this.chars[yy][xx]);
-        this.events.emit("updateName", this.name);
-      }
-    }
-    else if(this.input.activePointer.isDown && isMouseClicked == false) {
-      isMouseClicked = true;
-    }
-  }
 }
 
 
@@ -183,16 +121,29 @@ class ScoreBoard extends Phaser.Scene {
   }
 
   create() {
-    this.index = 0;
+    this.chars = [
+      ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
+      ["K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"],
+      ["U", "V", "W", "X", "Y", "Z", ".", "-", "<", ">"]
+    ];
+    this.charLimit = 8;
+    this.padding = 100;
+    this.letterSpacing = 20;
+    this.charWidth = 40;
+    this.charHeight = 40;
+    this.lineHeight = 2;
+    this.name = "";
+
     this.scene.bringToTop();
 
     this.add.text(100, 300, "Score   Name", {fontSize: "40px", fill: "#000000", fontStyle: "bold"});
-    let isOnScoreBoard = false;
+    this.isOnScoreBoard = false;
+    this.index = 0;
     for(let i = 0; i < scores.length; i++) {
-      if(score > scores[i].score && !isOnScoreBoard){
+      if(score > scores[i].score && !this.isOnScoreBoard){
         this.add.text(100, 300 + (i+1) * 50, score, {fontSize: "40px", fill: "#000000", fontStyle: "bold"});
         this.playerText = this.add.text(300, 300 + (i+1) * 50, "", {fontSize: "40px", fill: "#000000", fontStyle: "bold"});
-        isOnScoreBoard = true;
+        this.isOnScoreBoard = true;
         if(scores.length >= gameOptions.maxScores) {
           scores.pop();
         }
@@ -205,13 +156,17 @@ class ScoreBoard extends Phaser.Scene {
       }
     }
 
-    if (isOnScoreBoard) {
+    if (this.isOnScoreBoard) {
+      let text;
+      for (let i = 0; i < this.chars.length; i++) {
+        for (let j = 0; j < this.chars[i].length; j++) {
+          let xx = this.padding + j * (this.charWidth + this.letterSpacing);
+          let yy = 50 + i * (this.charHeight + this.lineHeight);
+          text = this.add.text(xx, yy, this.chars[i][j], {fontSize: "40px", fill: "#000000", fontStyle: "bold"});
+        }
+      }
       this.nameText = this.add.text(100, 200, "", {fontSize: "40px", fill: "#cccccc", fontStyle: "bold"})
       this.input.keyboard.enabled = false;
-      this.scene.launch("InputPanel", { padding: 100 });
-      this.panel = this.scene.get("InputPanel");
-      this.panel.events.on("updateName", this.updateName, this);
-      this.panel.events.on("submitName", this.submitName, this);
     }
     else {
       this.time.addEvent({
@@ -236,8 +191,6 @@ class ScoreBoard extends Phaser.Scene {
     this.time.addEvent({
       delay: 3000,
       callback: ()=>{
-        this.panel.events.removeListener("updateName");
-        this.panel.events.removeListener("submitName");
         this.scene.stop();
         level = 1;
         score = 0;
@@ -250,6 +203,38 @@ class ScoreBoard extends Phaser.Scene {
 
   updateName(name) {
     this.nameText.setText(name);
+  }
+
+  update() {
+    if(!this.isOnScoreBoard) {
+      return;
+    }
+    if(!this.input.activePointer.isDown && isMouseClicked == true){
+      let mouseX = this.input.activePointer.x;
+      let mouseY = this.input.activePointer.y;
+      let xx = (mouseX - this.padding - this.charWidth/4) / (this.charWidth + this.letterSpacing);
+      let yy = (mouseY - 50 - this.charHeight/2) / (this.charHeight + this.lineHeight);
+      xx = Math.abs(Math.round(xx));
+      yy = Math.abs(Math.round(yy));
+      isMouseClicked= false;
+      if(xx < 0 || xx > this.chars[0].length || yy < 0 || yy > this.chars.length) {
+        return;
+      }
+      if(this.chars[yy][xx] == "<") {
+        this.name = this.name.substring(0, this.name.length - 1);
+        this.updateName(this.name);
+      }
+      else if(this.chars[yy][xx] == ">") {
+        this.submitName();
+      }
+      else if(this.name.length < this.charLimit) {
+        this.name = this.name.concat(this.chars[yy][xx]);
+        this.updateName(this.name);
+      }
+    }
+    else if(this.input.activePointer.isDown && isMouseClicked == false) {
+      isMouseClicked = true;
+    }
   }
 }
 
@@ -372,7 +357,7 @@ class PlayGame extends Phaser.Scene {
     this.shotSound = this.sound.add("shot", {loop: false});
     this.collectSound = this.sound.add("collect", {loop: false});
 
-// perhosen lento:
+// butterfly flying:
     this.anims.create({
       key: "bfleft",
       frames: this.anims.generateFrameNumbers("butterfly", {start: 2, end: 3}),
@@ -386,8 +371,7 @@ class PlayGame extends Phaser.Scene {
       repeat: -1
     });
 
-
-// ampiaisen lento:
+// wasp flying:
     this.anims.create({
       key: "waspleft",
       frames: this.anims.generateFrameNumbers("wasp", {frames: [0]}),
@@ -481,7 +465,6 @@ class PlayGame extends Phaser.Scene {
             numBlocks = 0;
             this.flowers = [];
             this.blocks = [];
-        // seuraava level:
             level ++;
             this.scene.start("PlayGame");
           },
@@ -533,7 +516,6 @@ class PlayGame extends Phaser.Scene {
             numBlocks = 0;
             this.flowers = [];
             this.blocks = [];
-        // seuraava level:
             level ++;
             this.scene.start("PlayGame");
           },
@@ -693,6 +675,3 @@ class PlayGame extends Phaser.Scene {
     }
   }
 }
-
-
-
