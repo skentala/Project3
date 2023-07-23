@@ -597,14 +597,16 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
       this.anims.create({
         key: "waspleft",
         frames: this.anims.generateFrameNumbers("wasp", {
-          frames: [0]
+          start: 0,
+          end: 1
         }),
         repeat: 0
       });
       this.anims.create({
         key: "waspright",
         frames: this.anims.generateFrameNumbers("wasp", {
-          frames: [1]
+          start: 2,
+          end: 3
         }),
         repeat: 0
       });
@@ -650,12 +652,12 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
         fill: "#000000",
         fontStyle: "bold"
       });
-      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28 * 2, "You can shoot the insects with the mouse and gain ", {
+      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28 * 2, "You can shoot the insects with the mouse ", {
         fontSize: "28px",
         fill: "#000000",
         fontStyle: "bold"
       });
-      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28 * 3, "more points.", {
+      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28 * 3, "and gain more points.", {
         fontSize: "28px",
         fill: "#000000",
         fontStyle: "bold"

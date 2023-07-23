@@ -376,12 +376,12 @@ class PlayGame extends Phaser.Scene {
 // wasp flying:
     this.anims.create({
       key: "waspleft",
-      frames: this.anims.generateFrameNumbers("wasp", {frames: [0]}),
+      frames: this.anims.generateFrameNumbers("wasp", {start: 0, end: 1}),
       repeat: 0
     });
     this.anims.create({
       key: "waspright",
-      frames: this.anims.generateFrameNumbers("wasp", {frames: [1]}),
+      frames: this.anims.generateFrameNumbers("wasp", {start: 2, end: 3}),
       repeat: 0
     });
 
@@ -414,8 +414,8 @@ class PlayGame extends Phaser.Scene {
     }
     this.add.text(0, gameOptions.yblocks*gameOptions.blocksize, "Pick all flowers, but watch out for wasps and ", {fontSize: "28px", fill: "#000000", fontStyle: "bold"});
     this.add.text(0, gameOptions.yblocks*gameOptions.blocksize + 28, "moving walls. Butterflies will suck flowers...", {fontSize: "28px", fill: "#000000", fontStyle: "bold"});
-    this.add.text(0, gameOptions.yblocks*gameOptions.blocksize + 28*2, "You can shoot the insects with the mouse and gain ", {fontSize: "28px", fill: "#000000", fontStyle: "bold"});
-    this.add.text(0, gameOptions.yblocks*gameOptions.blocksize + 28*3, "more points.", {fontSize: "28px", fill: "#000000", fontStyle: "bold"});
+    this.add.text(0, gameOptions.yblocks*gameOptions.blocksize + 28*2, "You can shoot the insects with the mouse ", {fontSize: "28px", fill: "#000000", fontStyle: "bold"});
+    this.add.text(0, gameOptions.yblocks*gameOptions.blocksize + 28*3, "and gain more points.", {fontSize: "28px", fill: "#000000", fontStyle: "bold"});
 
     this.cursors = this.input.keyboard.createCursorKeys();
   }
