@@ -288,6 +288,7 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
     key: "create",
     value: function create() {
       var _this = this;
+      // letters to choose for the score board name
       this.chars = [["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"], ["K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"], ["U", "V", "W", "X", "Y", "Z", ".", "-", "<", ">"]];
       this.charLimit = 8;
       this.padding = 100;
@@ -296,14 +297,18 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
       this.charHeight = 40;
       this.lineHeight = 2;
       this.name = "";
+      this.isOnScoreBoard = false; // was the score of the player good enough for the score board
+      this.index = 0;
+      this.isReadyToReceiveMouseClicks = false; // Should the mouse clicks be taken into account or not
+
       this.scene.bringToTop();
+
+      // set the texts on the score board
       this.add.text(100, 300, "Score   Name", {
         fontSize: "40px",
         fill: "#000000",
         fontStyle: "bold"
       });
-      this.isOnScoreBoard = false;
-      this.index = 0;
       for (var i = 0; i < scores.length; i++) {
         if (score > scores[i].score && !this.isOnScoreBoard) {
           this.add.text(100, 300 + (i + 1) * 50, score, {
@@ -357,6 +362,7 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
           fontStyle: "bold"
         });
         this.input.keyboard.enabled = false;
+        this.isReadyToReceiveMouseClicks = true;
       } else {
         this.time.addEvent({
           delay: 3000,
@@ -375,6 +381,7 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
     key: "submitName",
     value: function submitName() {
       var _this2 = this;
+      this.isReadyToReceiveMouseClicks = false;
       this.scene.stop("InputPanel");
       this.playerText.setText(this.nameText.text);
       scores[this.index].name = this.nameText.text;
@@ -399,7 +406,7 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
   }, {
     key: "update",
     value: function update() {
-      if (!this.isOnScoreBoard) {
+      if (!this.isOnScoreBoard || !this.isReadyToReceiveMouseClicks) {
         return;
       }
       if (!this.input.activePointer.isDown && isMouseClicked == true) {
@@ -410,7 +417,8 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
         xx = Math.abs(Math.round(xx));
         yy = Math.abs(Math.round(yy));
         isMouseClicked = false;
-        if (xx < 0 || xx > this.chars[0].length || yy < 0 || yy > this.chars.length) {
+        console.log(xx, yy, this.chars[0].length, this.chars.length);
+        if (xx < 0 || xx >= this.chars[0].length || yy < 0 || yy >= this.chars.length) {
           return;
         }
         if (this.chars[yy][xx] == "<") {
@@ -642,22 +650,22 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
         var img = this.add.image(game.config.width - _i3 * gameOptions.blocksize / 2, gameOptions.blocksize / 4, "man");
         img.setScale(0.5);
       }
-      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize, "Pick all flowers, but watch out for wasps and ", {
+      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize, "Pick all flowers with arrow keys. Wasps will sting", {
         fontSize: "28px",
         fill: "#000000",
         fontStyle: "bold"
       });
-      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28, "moving walls. Butterflies will suck flowers...", {
+      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28, "you and butterflies will suck the flowers...", {
         fontSize: "28px",
         fill: "#000000",
         fontStyle: "bold"
       });
-      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28 * 2, "You can shoot the insects with the mouse ", {
+      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28 * 2, "The walls are moving. You can shoot the insects", {
         fontSize: "28px",
         fill: "#000000",
         fontStyle: "bold"
       });
-      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28 * 3, "and gain more points.", {
+      this.add.text(0, gameOptions.yblocks * gameOptions.blocksize + 28 * 3, "with the mouse and gain more points. ", {
         fontSize: "28px",
         fill: "#000000",
         fontStyle: "bold"
