@@ -211,13 +211,11 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-//import Phaser from "phaser";
 //Global variables:
 var game; //
 var numflowers = 0; // number of flowers still in the game
 var numBlocks = 0; // number of wall blocks added to the game area
 var level = 1; // current game level
-var x, y; // 
 var isMouseClicked = false; // was a mouse button clicked
 var score = 0; // current score
 var numMen; // curremt number of lives left
@@ -228,31 +226,57 @@ var scores = [{
 }];
 var gameOptions = {
   maxlevel: 3,
+  // max levelScore
   maxScores: 3,
+  // how many players can get on the score board
   manGravity: 0,
+  // the player is not falling, but the view is from above
   manSpeed: 150,
+  // the speed of the player
   blocksize: 60,
+  // the size of a wall block
   maxMen: 3,
+  // max lives
   numBlueFlowers: 10,
+  // number of blue flowers in the game
   numRedFlowers: 8,
+  // number of red flowers in the game
   redFlowerScore: 20,
+  // score for collecting one red flower
   blueFlowerScore: 10,
+  // score for collecting one blue flower
   stingScore: -80,
+  // score forgetting stinged by as wasp
   levelScore: 100,
+  // score for completing a level
   shootWaspScore: 30,
+  // score for shooting a wasp
   shootButterflyScore: 10,
-  shootBlockScore: -50,
+  // score for shooting a butterfly
   xblocks: 14,
+  // number of blocks in x direction
   yblocks: 14,
+  // number of blocks in y direction
   butterflySpeed: [100, 115, 130],
+  // the speed of a butterfly in each level
   waspSpeed: [100, 120, 140],
+  // the speed of a wasp in each level
   bulletSpeed: 800,
+  // the speed of a bullet
   enemyInterval: [7000, 5500, 3500],
+  // the time interval of new enemies in each level
   moveBlockInterval: [5000, 3500, 2000],
+  // the time interval of moving blocks in each level
   butterflyRateOfEnemies: [0.7, 0.6, 0.5],
+  // the rate of butterflies out of enemies in each level
   overlapDistance: 30,
-  maps: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, 0, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, 0, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, -1, -1, 0, 0, -1, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, 0, -1, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, 0, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, -1, -1, 0, 0, 0, 0, 0, -1, 0, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, 0, -1, -1, -1, -1, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, 0, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, -1, -1, -1, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, -1, -1, 0, -1, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, -1, -1, 0, -1, -1, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+  // how close the game objects should be to each other to create a hit
+  maps: [
+  // block maps for each level: 0 = block, -1 = no block
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, 0, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, 0, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, -1, -1, 0, 0, -1, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, 0, -1, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, 0, 0, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, -1, -1, 0, 0, 0, 0, 0, -1, 0, 0, -1, -1, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, 0, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, 0, -1, -1, -1, -1, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, 0, -1, -1, -1, -1, 0, 0, -1, 0, 0, -1, 0, -1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, -1, -1, -1, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, -1, -1, 0, -1, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, 0, -1, -1, -1, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, -1, 0, -1, -1, 0, 0, -1, -1, 0, -1, -1, -1, -1, -1, -1, 0, -1, -1, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 };
+
+/***************************************/
 window.onload = function () {
   var gameConfig = {
     type: Phaser.AUTO,
@@ -277,19 +301,26 @@ window.onload = function () {
   game = new Phaser.Game(gameConfig);
   window.focus();
 };
+
+/*******************************************/
+/* scene for showing/modifying score board */
+/*******************************************/
 var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
   _inherits(ScoreBoard, _Phaser$Scene);
   var _super = _createSuper(ScoreBoard);
+  /*******************************************/
   function ScoreBoard() {
     _classCallCheck(this, ScoreBoard);
     return _super.call(this, "ScoreBoard");
   }
+
+  /*******************************************/
   _createClass(ScoreBoard, [{
     key: "create",
     value: function create() {
       var _this = this;
       // letters to choose for the score board name
-      this.chars = [["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"], ["K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"], ["U", "V", "W", "X", "Y", "Z", ".", "-", "<", ">"]];
+      this.chars = [["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"], ["K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"], ["U", "V", "W", "X", "Y", "Z", ".", "-", "<", "#"]];
       this.charLimit = 8;
       this.padding = 100;
       this.letterSpacing = 20;
@@ -299,7 +330,7 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
       this.name = "";
       this.isOnScoreBoard = false; // was the score of the player good enough for the score board
       this.index = 0;
-      this.isReadyToReceiveMouseClicks = false; // Should the mouse clicks be taken into account or not
+      this.isReadyToReceiveMouseClicks = false; // Should mouse clicks be taken into account or not
 
       this.scene.bringToTop();
 
@@ -310,7 +341,9 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
         fontStyle: "bold"
       });
       for (var i = 0; i < scores.length; i++) {
+        // should the player go on the score board?
         if (score > scores[i].score && !this.isOnScoreBoard) {
+          // the row for this player: score is known and we are waiting for the name to be input
           this.add.text(100, 300 + (i + 1) * 50, score, {
             fontSize: "40px",
             fill: "#000000",
@@ -323,12 +356,13 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
           });
           this.isOnScoreBoard = true;
           if (scores.length >= gameOptions.maxScores) {
-            scores.pop();
+            scores.pop(); // drop the last one, if the board is full
           }
+
           scores.splice(i, 0, {
             name: "",
             score: score
-          });
+          }); // add the new player to the array
           this.index = i;
         } else {
           this.add.text(100, 300 + (i + 1) * 50, scores[i].score, {
@@ -344,6 +378,7 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
         }
       }
       if (this.isOnScoreBoard) {
+        // show the character table so that the player can select letters for their name
         var text;
         for (var _i = 0; _i < this.chars.length; _i++) {
           for (var j = 0; j < this.chars[_i].length; j++) {
@@ -364,6 +399,7 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
         this.input.keyboard.enabled = false;
         this.isReadyToReceiveMouseClicks = true;
       } else {
+        // we only show the score board and then a new game can start
         this.time.addEvent({
           delay: 3000,
           callback: function callback() {
@@ -377,6 +413,11 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
         });
       }
     }
+
+    /*******************************************/
+    /* The player has written their name and   */
+    /* wants to submit it on the score board   */
+    /*******************************************/
   }, {
     key: "submitName",
     value: function submitName() {
@@ -398,48 +439,69 @@ var ScoreBoard = /*#__PURE__*/function (_Phaser$Scene) {
         loop: false
       });
     }
+
+    /*******************************************/
+    /* The player has clicked a character and  */
+    /* it should be updated on the screen      */
+    /*******************************************/
   }, {
     key: "updateName",
     value: function updateName(name) {
       this.nameText.setText(name);
     }
+
+    /*******************************************/
+    /* Catching the mouse clicks on the screen */
+    /* while the player is selecting letters   */
+    /*******************************************/
   }, {
     key: "update",
     value: function update() {
-      if (!this.isOnScoreBoard || !this.isReadyToReceiveMouseClicks) {
+      if (!this.isReadyToReceiveMouseClicks) {
+        // the status of the scene is not ready for selecting letters
         return;
       }
       if (!this.input.activePointer.isDown && isMouseClicked == true) {
+        // mouse clicked (down + up)
         var mouseX = this.input.activePointer.x;
         var mouseY = this.input.activePointer.y;
+
+        // calculating which character was clicked
         var xx = (mouseX - this.padding - this.charWidth / 4) / (this.charWidth + this.letterSpacing);
         var yy = (mouseY - 50 - this.charHeight / 2) / (this.charHeight + this.lineHeight);
         xx = Math.abs(Math.round(xx));
         yy = Math.abs(Math.round(yy));
         isMouseClicked = false;
-        console.log(xx, yy, this.chars[0].length, this.chars.length);
         if (xx < 0 || xx >= this.chars[0].length || yy < 0 || yy >= this.chars.length) {
+          // this click was outside of the character set area
           return;
         }
         if (this.chars[yy][xx] == "<") {
+          // "backspace" removes the last character
           this.name = this.name.substring(0, this.name.length - 1);
           this.updateName(this.name);
-        } else if (this.chars[yy][xx] == ">") {
+        } else if (this.chars[yy][xx] == "#") {
+          // "enter" submits the name
           this.submitName();
         } else if (this.name.length < this.charLimit) {
           this.name = this.name.concat(this.chars[yy][xx]);
           this.updateName(this.name);
         }
       } else if (this.input.activePointer.isDown && isMouseClicked == false) {
+        // mouse clicked (down, not yet up)
         isMouseClicked = true;
       }
     }
   }]);
   return ScoreBoard;
 }(Phaser.Scene);
+/*******************************************/
+/* scene for playing the game              */
+/*******************************************/
 var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
   _inherits(PlayGame, _Phaser$Scene2);
   var _super2 = _createSuper(PlayGame);
+  /*******************************************/
   function PlayGame() {
     var _this3;
     _classCallCheck(this, PlayGame);
@@ -447,9 +509,12 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
     numMen = gameOptions.maxMen;
     return _this3;
   }
+
+  /*******************************************/
   _createClass(PlayGame, [{
     key: "preload",
     value: function preload() {
+      //load the images and sounds
       this.load.image("block", require("../assets/block_grey.png"));
       this.load.image("flowerBlue", require("../assets/flower_blue.png"));
       this.load.image("flowerRed", require("../assets/flower_red.png"));
@@ -471,13 +536,19 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
       this.load.audio("shot", [require("../assets/shot.mp3")]);
       this.load.image("bullet", require("../assets/bullet.png"));
     }
+
+    /*******************************************/
   }, {
     key: "create",
     value: function create() {
       var _this4 = this;
-      var flowers = [];
-      var blocks = [];
-      this.scene.stop("ScoreBoard");
+      var flowers = []; // positions of all redFlowerScore
+      var blocks = []; // positions of all wall blocksize
+      this.scene.stop("ScoreBoard"); // stop the possible other scene
+      this.x;
+      this.y;
+
+      // add groups for wall blocks and flowers
       this.blockGroup = this.physics.add.group({
         immovable: true,
         allowGravity: false
@@ -491,83 +562,101 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
         allowGravity: false
       });
 
-      // set the wall blocks
-      x = 0;
-      y = 0;
+      // set the wall blocks according to the predefined map per level
+      this.x = 0;
+      this.y = 0;
       numBlocks = 0;
       gameOptions.maps[level - 1].forEach(function (square) {
+        // go through the map for this level
+        // wall blocks are marked with 0, empty spaces with -1 on the map
         if (square == 0) {
-          _this4.blockGroup.create(x * gameOptions.blocksize + gameOptions.blocksize / 2, y * gameOptions.blocksize + gameOptions.blocksize / 2, "block");
+          _this4.blockGroup.create(_this4.x * gameOptions.blocksize + gameOptions.blocksize / 2, _this4.y * gameOptions.blocksize + gameOptions.blocksize / 2, "block");
+          // write down the position to an array
           blocks[numBlocks] = {
-            x: x * gameOptions.blocksize + gameOptions.blocksize / 2,
-            y: y * gameOptions.blocksize + gameOptions.blocksize / 2
+            x: _this4.x * gameOptions.blocksize + gameOptions.blocksize / 2,
+            y: _this4.y * gameOptions.blocksize + gameOptions.blocksize / 2
           };
           numBlocks++;
         }
-        if (x >= gameOptions.xblocks - 1) {
-          x = -1;
-          y += 1;
+        if (_this4.x >= gameOptions.xblocks - 1) {
+          // next row
+          _this4.x = -1;
+          _this4.y += 1;
         }
-        x++;
+        _this4.x++;
       });
+
+      // set the blue flowers randomly to empty squares
       numflowers = 0;
       for (var i = 0; i < gameOptions.numBlueFlowers; i++) {
-        x = Phaser.Math.Between(1, gameOptions.xblocks - 2) * gameOptions.blocksize + gameOptions.blocksize / 2;
-        y = Phaser.Math.Between(1, gameOptions.yblocks - 2) * gameOptions.blocksize + gameOptions.blocksize / 2;
+        this.x = Phaser.Math.Between(1, gameOptions.xblocks - 2) * gameOptions.blocksize + gameOptions.blocksize / 2;
+        this.y = Phaser.Math.Between(1, gameOptions.yblocks - 2) * gameOptions.blocksize + gameOptions.blocksize / 2;
         var allowed = true;
         for (var j = 0; j < numBlocks; j++) {
-          if (x == blocks[j].x && y == blocks[j].y) {
+          if (this.x == blocks[j].x && this.y == blocks[j].y) {
+            // not allowed to positions of wall blocks
             allowed = false;
             i--;
             break;
           }
         }
         for (var _j = 0; _j < numflowers; _j++) {
-          if (x == flowers[_j].x && y == flowers[_j].y) {
+          if (this.x == flowers[_j].x && this.y == flowers[_j].y) {
+            // not allowed to positions of other blue flowers
             allowed = false;
             i--;
             break;
           }
         }
         if (allowed == true) {
-          this.blueFlowerGroup.create(x, y, "flowerBlue");
+          this.blueFlowerGroup.create(this.x, this.y, "flowerBlue");
           flowers[numflowers] = {
-            x: x,
-            y: y
+            x: this.x,
+            y: this.y
           };
           numflowers++;
         }
       }
+
+      // set the red flowers randomly to empty squares
       for (var _i2 = 0; _i2 < gameOptions.numRedFlowers; _i2++) {
-        x = Phaser.Math.Between(1, gameOptions.xblocks - 2) * gameOptions.blocksize + gameOptions.blocksize / 2;
-        y = Phaser.Math.Between(1, gameOptions.yblocks - 2) * gameOptions.blocksize + gameOptions.blocksize / 2;
+        this.x = Phaser.Math.Between(1, gameOptions.xblocks - 2) * gameOptions.blocksize + gameOptions.blocksize / 2;
+        this.y = Phaser.Math.Between(1, gameOptions.yblocks - 2) * gameOptions.blocksize + gameOptions.blocksize / 2;
         var _allowed = true;
         for (var _j2 = 0; _j2 < numflowers; _j2++) {
-          if (x == flowers[_j2].x && y == flowers[_j2].y) {
+          if (this.x == flowers[_j2].x && this.y == flowers[_j2].y) {
+            // not allowed to positions of other blue or red flowers
             _allowed = false;
             _i2--;
             break;
           }
         }
         for (var _j3 = 0; _j3 < numBlocks; _j3++) {
-          if (x == blocks[_j3].x && y == blocks[_j3].y) {
+          if (this.x == blocks[_j3].x && this.y == blocks[_j3].y) {
+            // not allowed to positions of wall blocks
             _allowed = false;
             _i2--;
             break;
           }
         }
         if (_allowed == true) {
-          this.redFlowerGroup.create(x, y, "flowerRed");
+          this.redFlowerGroup.create(this.x, this.y, "flowerRed");
           flowers[numflowers] = {
-            x: x,
-            y: y
+            x: this.x,
+            y: this.y
           };
           numflowers++;
         }
       }
+
+      // the player
       this.man = this.physics.add.sprite(gameOptions.blocksize * 1.5, gameOptions.blocksize * 1.5, "man");
+
+      // enemies
       this.butterflyGroup = this.physics.add.group({});
       this.waspGroup = this.physics.add.group({});
+
+      // sounds
       this.stingSound = this.sound.add("sting", {
         loop: false
       });
@@ -581,7 +670,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
         loop: false
       });
 
-      // butterfly flying:
+      // butterfly flying left or right
       this.anims.create({
         key: "bfleft",
         frames: this.anims.generateFrameNumbers("butterfly", {
@@ -601,14 +690,15 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
         repeat: -1
       });
 
-      // wasp flying:
+      // wasp flying left or right
       this.anims.create({
         key: "waspleft",
         frames: this.anims.generateFrameNumbers("wasp", {
           start: 0,
           end: 1
         }),
-        repeat: 0
+        frameRate: 20,
+        repeat: -1
       });
       this.anims.create({
         key: "waspright",
@@ -616,26 +706,36 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
           start: 2,
           end: 3
         }),
-        repeat: 0
+        frameRate: 20,
+        repeat: -1
       });
+
+      // timer for adding new enemies
       this.triggerTimer = this.time.addEvent({
         callback: this.addEnemies,
         callbackScope: this,
         delay: gameOptions.enemyInterval[level - 1],
         loop: true
       });
+
+      // timer for moving wall blocks
       this.triggerTimer = this.time.addEvent({
         callback: this.moveOneBlock,
         callbackScope: this,
         delay: gameOptions.moveBlockInterval[level - 1],
         loop: true
       });
+
+      // player can not go through walls
       this.physics.add.collider(this.man, this.blockGroup);
-      this.physics.add.overlap(this.man, this.redFlowerGroup, this.collectFlower, this.isCloseEnoughll, this);
+      // what to do when game objects touch each others
+      this.physics.add.overlap(this.man, this.redFlowerGroup, this.collectFlower, this.isCloseEnough, this);
       this.physics.add.overlap(this.man, this.blueFlowerGroup, this.collectFlower, this.isCloseEnough, this);
       this.physics.add.overlap(this.butterflyGroup, this.blueFlowerGroup, this.butterflySucksFlower, this.isCloseEnough, this);
       this.physics.add.overlap(this.butterflyGroup, this.redFlowerGroup, this.butterflySucksFlower, this.isCloseEnough, this);
       this.physics.add.overlap(this.man, this.waspGroup, this.waspStings, this.isCloseEnough, this);
+
+      // texts on the screen
       this.gameText = this.add.text(0, 0, "Level ".concat(level, "/").concat(gameOptions.maxlevel), {
         fontSize: "36px",
         fill: "#000000",
@@ -647,6 +747,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
         fontStyle: "bold"
       });
       for (var _i3 = 1; _i3 <= numMen; _i3++) {
+        // number of lives left
         var img = this.add.image(game.config.width - _i3 * gameOptions.blocksize / 2, gameOptions.blocksize / 4, "man");
         img.setScale(0.5);
       }
@@ -670,8 +771,15 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
         fill: "#000000",
         fontStyle: "bold"
       });
+
+      // using arrow keys
       this.cursors = this.input.keyboard.createCursorKeys();
     }
+
+    /*******************************************/
+    /* are the objects close enough to be      */
+    /* considered as hitting each other        */
+    /*******************************************/
   }, {
     key: "isCloseEnough",
     value: function isCloseEnough(body1, body2) {
@@ -680,27 +788,37 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
       }
       return false;
     }
+
+    /*******************************************/
+    /* player collects a flower                */
+    /*******************************************/
   }, {
     key: "collectFlower",
     value: function collectFlower(man, flower) {
       var _this5 = this;
       flower.disableBody(true, true);
       this.collectSound.play();
-      if (flower.body.gameObject.texture.key == "flowerBlue") score += gameOptions.blueFlowerScore;else score += gameOptions.redFlowerScore;
+      if (flower.body.gameObject.texture.key == "flowerBlue") score += gameOptions.blueFlowerScore; //blue flower score
+      else score += gameOptions.redFlowerScore; // red flower score
       this.scoreText.setText(score);
       numflowers--;
       if (numflowers == 0) {
-        this.time.removeAllEvents();
+        // all flowers collected (or sucked by butterflies)
+        this.time.removeAllEvents(); // stop timers
+
+        // remove all enemies
         this.butterflyGroup.getChildren().forEach(function (element) {
           element.disableBody(true, true);
         });
         this.waspGroup.getChildren().forEach(function (element) {
           element.disableBody(true, true);
         });
-        score += gameOptions.levelScore;
+        score += gameOptions.levelScore; // score for completing a level
         this.scoreText.setText(score);
         if (level == gameOptions.maxlevel) {
+          // all levels completed
           this.gameText.setText("Level ".concat(level, "/").concat(gameOptions.maxlevel, " completed, game finished"));
+          // show texts before starting next scene
           this.time.addEvent({
             delay: 4000,
             callback: function callback() {
@@ -708,12 +826,15 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
               numBlocks = 0;
               _this5.flowers = [];
               _this5.blocks = 0;
-              _this5.scene.start("ScoreBoard");
+              _this5.scene.start("ScoreBoard"); // show the score board
             },
+
             loop: false
           });
         } else {
+          // next level
           this.gameText.setText("Level ".concat(level, "/").concat(gameOptions.maxlevel, " completed"));
+          // show texts before starting next scene
           this.time.addEvent({
             delay: 2000,
             callback: function callback() {
@@ -729,19 +850,26 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
         }
       }
     }
+
+    /*******************************************/
+    /* butterfly gets a flower                 */
+    /*******************************************/
   }, {
     key: "butterflySucksFlower",
     value: function butterflySucksFlower(butterfly, flower) {
       var _this6 = this;
       this.suckingSound.play();
       flower.disableBody(true, true);
+      // scores for losing the flower to the butterfly
       if (flower.body.gameObject.texture.key == "flowerBlue") score -= gameOptions.blueFlowerScore / 2;else score -= gameOptions.redFlowerScore / 2;
       this.scoreText.setText(score);
       numflowers--;
       if (numflowers == 0) {
-        this.time.removeAllEvents();
-        score += gameOptions.levelScore;
+        // all flowers collected or sucked
+        this.time.removeAllEvents(); // stop timers
+        score += gameOptions.levelScore; // score for completing a level
         this.scoreText.setText(score);
+        // remove all enemies
         this.butterflyGroup.getChildren().forEach(function (element) {
           element.disableBody(true, true);
         });
@@ -749,7 +877,9 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
           element.disableBody(true, true);
         });
         if (level == gameOptions.maxlevel) {
+          // all levels completed
           this.gameText.setText("Level ".concat(level, "/").concat(gameOptions.maxlevel, " completed, game finished"));
+          // show texts before starting next scene
           this.time.addEvent({
             delay: 4000,
             callback: function callback() {
@@ -757,12 +887,15 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
               numBlocks = 0;
               _this6.flowers = [];
               _this6.blocks = [];
-              _this6.scene.start("ScoreBoard");
+              _this6.scene.start("ScoreBoard"); // show the score board
             },
+
             loop: false
           });
         } else {
+          // next level
           this.gameText.setText("Level ".concat(level, "/").concat(gameOptions.maxlevel, " completed"));
+          // show texts before starting next scene
           this.time.addEvent({
             delay: 2000,
             callback: function callback() {
@@ -778,6 +911,10 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
         }
       }
     }
+
+    /*******************************************/
+    /* wasp stings the player                  */
+    /*******************************************/
   }, {
     key: "waspStings",
     value: function waspStings(man, wasp) {
@@ -795,8 +932,10 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
         element.disableBody(true, true);
       });
       if (numMen == 0) {
+        // all lives used, game over
         this.gameText.setText("Game over");
       }
+      // show texts before starting next scene
       this.time.addEvent({
         delay: 4000,
         callback: function callback() {
@@ -805,20 +944,28 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
           _this7.flowers = [];
           _this7.blocks = [];
           if (numMen == 0) {
-            _this7.scene.start("ScoreBoard");
+            _this7.scene.start("ScoreBoard"); // show the score board
           } else {
-            _this7.scene.start("PlayGame");
+            _this7.scene.start("PlayGame"); // start this level again
           }
         },
+
         loop: false
       });
     }
+
+    /*******************************************/
+    /* add butterflies or wasps to the game    */
+    /*******************************************/
   }, {
     key: "addEnemies",
     value: function addEnemies() {
+      // choose the enemy randomly but according to the predefined rate for this level
       if (Phaser.Math.FloatBetween(0, 1) <= gameOptions.butterflyRateOfEnemies[level - 1]) {
+        // add a butterfly to a random position
         var bf = this.butterflyGroup.create(Phaser.Math.Between(0, game.config.width), game.config.height, "butterfly");
         bf.setVelocityY(-gameOptions.butterflySpeed[level - 1]);
+        // choose the direction according to the start position
         if (bf.body.x < gameOptions.blocksize * gameOptions.xblocks / 2) {
           bf.setVelocityX(gameOptions.butterflySpeed[level - 1] / 1.7);
           bf.anims.play("bfright", true);
@@ -827,8 +974,10 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
           bf.anims.play("bfleft", true);
         }
       } else {
+        // add a wasp to a random position
         var w = this.waspGroup.create(Phaser.Math.Between(0, game.config.width), game.config.height, "wasp");
         w.setVelocityY(-gameOptions.waspSpeed[level - 1]);
+        // choose the direction according to the start position
         if (w.body.x < gameOptions.blocksize * gameOptions.xblocks / 2) {
           w.setVelocityX(gameOptions.waspSpeed[level - 1] / 1.7);
           w.anims.play("waspright", true);
@@ -838,6 +987,10 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
         }
       }
     }
+
+    /*******************************************/
+    /* move one wall block randomly            */
+    /*******************************************/
   }, {
     key: "moveOneBlock",
     value: function moveOneBlock() {
@@ -845,18 +998,23 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
       var flBlue = this.blueFlowerGroup.getChildren();
       var flRed = this.redFlowerGroup.getChildren();
       var index = 0;
+
+      // select the block to move randomly, but it must be a block inside the surrounding walls
       while (true) {
         index = Phaser.Math.Between(gameOptions.xblocks, numBlocks - gameOptions.xblocks);
-        var _x = elements[index].body.position.x;
-        if (_x == 0 || _x / gameOptions.blocksize == gameOptions.xblocks - 1) {
+        var x = elements[index].body.position.x;
+        if (x == 0 || x / gameOptions.blocksize == gameOptions.xblocks - 1) {
           continue;
         } else break;
       }
+
+      // select the new position randomly, but it must be a somewhere inside the surrounding walls
       var new_x = Phaser.Math.Between(1, gameOptions.xblocks - 2) * gameOptions.blocksize;
       var new_y = Phaser.Math.Between(1, gameOptions.yblocks - 2) * gameOptions.blocksize;
       var i = 0;
       var allowed = true;
       elements.forEach(function (element) {
+        // the new position cannot be occupied by another block
         if (i != index && element.body.position.x == new_x && element.body.position.y == new_y) {
           allowed = false;
         }
@@ -864,25 +1022,34 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
         i++;
       });
       flBlue.forEach(function (fl) {
+        // the new position cannot be occupied by blue flowers
         if (Math.abs(fl.body.position.x - new_x) < gameOptions.blocksize && Math.abs(fl.body.position.y - new_y) < gameOptions.blocksize) {
           allowed = false;
         }
         ;
       });
       flRed.forEach(function (fl) {
+        // the new position cannot be occupied by red flowers
         if (Math.abs(fl.body.position.x - new_x) < gameOptions.blocksize && Math.abs(fl.body.position.y - new_y) < gameOptions.blocksize) {
           allowed = false;
         }
         ;
       });
+      // the new position cannot be the position of the player
       if (Math.abs(this.man.body.position.x - new_x) < gameOptions.blocksize && Math.abs(this.man.body.position.y - new_y) < gameOptions.blocksize) {
         allowed = false;
       }
       ;
       if (allowed) {
+        // move the block
         elements[index].body.reset(new_x + gameOptions.blocksize / 2, new_y + gameOptions.blocksize / 2);
       }
     }
+
+    /*******************************************/
+    /* the player has shot a bullet and it has */
+    /* hit one of the enemies                  */
+    /*******************************************/
   }, {
     key: "shoot",
     value: function shoot(bullet, target) {
@@ -892,10 +1059,17 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
       if (target.texture.key == "wasp") score += gameOptions.shootWaspScore;else if (target.texture.key == "butterfly") score += gameOptions.shootButterflyScore;
       this.scoreText.setText(score);
     }
+
+    /*******************************************/
+    /* Catching the mouse clicks on the screen */
+    /* and arrow key presses                   */
+    /*******************************************/
   }, {
     key: "update",
     value: function update() {
       if (!this.input.activePointer.isDown && isMouseClicked == true) {
+        // mouse clicked (down + up)
+        // shoot a bullet
         this.shotSound.play();
         this.bullet = this.physics.add.sprite(this.man.body.center.x, this.man.body.center.y, 'bullet');
         this.physics.add.overlap(this.bullet, this.butterflyGroup, this.shoot, this.isCloseEnough, this);
@@ -908,8 +1082,11 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
         this.bullet.setVelocityY(gameOptions.bulletSpeed * distY / (Math.abs(distX) + Math.abs(distY)));
         isMouseClicked = false;
       } else if (this.input.activePointer.isDown && isMouseClicked == false) {
+        // mouse clicked down but not yet up
         isMouseClicked = true;
       }
+
+      // arrow key presses move the player
       if (this.cursors.left.isDown) {
         this.man.body.velocity.x = -gameOptions.manSpeed;
         this.man.body.velocity.y = 0;
@@ -923,6 +1100,7 @@ var PlayGame = /*#__PURE__*/function (_Phaser$Scene2) {
         this.man.body.velocity.y = gameOptions.manSpeed;
         this.man.body.velocity.x = 0;
       } else {
+        // stop the player
         this.man.body.velocity.x = 0;
         this.man.body.velocity.y = 0;
       }
